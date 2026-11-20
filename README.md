@@ -1,1 +1,2 @@
-# learnswedishproject
+# LearnEnglishProject
+Learn English language

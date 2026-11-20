@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>English for Sweden - Ultimate Edition</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Mở menu" onclick="toggleMenu()">
+        <span class="hamburger-lines" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      <div class="header-brand">
+        <div class="header-title-row">
+          <h1>English For Work &amp; Life</h1>
+        </div>
+      </div>
+
+      <div class="auth-box" id="auth-box">
+        <span class="auth-status" id="auth-status">Chưa đăng nhập</span>
+        <button type="button" class="btn btn-sm btn-warning" id="google-login-btn" onclick="signInWithGoogle()">
+          🔐 Đăng nhập Google
+        </button>
+        <button type="button" class="btn btn-sm btn-secondary" id="google-logout-btn" style="display:none;"
+          onclick="signOutGoogle()">
+          Đăng xuất
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="menu-backdrop" id="menu-backdrop" onclick="closeMenu()"></div>
+
+  <nav class="drawer-menu" id="drawer-menu" aria-label="Danh mục học tập">
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-kicker">MENU HỌC TẬP</div>
+      </div>
+      <button type="button" class="close-menu-btn" aria-label="Đóng menu" onclick="closeMenu()">✕</button>
+    </div>
+
+    <div class="drawer-section-label">Luyện kỹ năng cốt lõi</div>
+    <button type="button" class="nav-btn active" onclick="switchTab('vocab', this)">
+      <span class="nav-icon">✦</span>
+      <span class="nav-label">Từ vựng</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('dictation', this)">
+      <span class="nav-icon">🎧</span>
+      <span class="nav-label">Nghe Chính Tả (300+ Câu)</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('grammar', this)">
+      <span class="nav-icon">📐</span>
+      <span class="nav-label">Ngữ pháp (12 Thì)</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('speaking', this)">
+      <span class="nav-icon">🎙️</span>
+      <span class="nav-label">Luyện nói</span>
+    </button>
+
+    <div class="drawer-section-label">Tra cứu &amp; Cá nhân hóa</div>
+    <button type="button" class="nav-btn" onclick="switchTab('verbs', this)">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Bất quy tắc (Full)</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('vocab-store', this)">
+      <span class="nav-icon">📚</span>
+      <span class="nav-label">Kho từ vựng</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('notebook', this)">
+      <span class="nav-icon">📌</span>
+      <span class="nav-label">Sổ tay &amp; Câu sai</span>
+    </button>
+
+    <div class="drawer-footer">
+      <span class="drawer-dot"></span>
+      <span>SWEDEN EDITION • SALON &amp; DAILY LIFE</span>
+    </div>
+  </nav>
+
+<div class="container">
+    <div class="learning-five-layout" id="learning-five-layout">
+      <!-- 3/5: TOÀN BỘ KHUNG HỌC -->
+      <div class="learning-main-col">
+
+        <!-- ==================== 1. TỪ VỰNG ==================== -->
+        <div id="tab-vocab" class="tab-content active">
+          <div class="card">
+            <div class="card-title">
+              <span id="vocab-mode-title">Cài đặt bài học từ vựng (Hàng đợi 10 từ xoay vòng)</span>
+              <span class="tag" id="vocab-counter">0/10</span>
+            </div>
+            <div id="normal-vocab-filters" class="grid-2">
+              <select id="vocab-level" onchange="initVocabQueue()">
+                <option value="all">Tất cả trình độ (Bậc 1-6)</option>
+                <option value="1">Bậc 1 (A1 - Cơ bản)</option>
+                <option value="2">Bậc 2 (A2 - Sơ cấp)</option>
+                <option value="3">Bậc 3 (B1 - Trung cấp)</option>
+                <option value="4">Bậc 4 (B2 - Trung cao cấp)</option>
+                <option value="5">Bậc 5 (C1 - Cao cấp)</option>
+                <option value="6">Bậc 6 (C2 - Thành thạo)</option>
+              </select>
+              <select id="vocab-topic" onchange="initVocabQueue()">
+                <option value="all">❖ Tất cả chủ đề</option>
+                <option value="nail">💅 Chuyên ngành Nail</option>
+                <option value="lash">👁️ Nối mi (Eyelash)</option>
+                <option value="spa">💆‍♀️ Spa &amp; Chăm sóc da</option>
+                <option value="salon">🗣️ Tư vấn khách tại tiệm</option>
+                <option value="sweden">🇸🇪 Cuộc sống Thụy Điển</option>
+                <option value="personal_and_family">Bản thân và gia đình</option>
+              </select>
+            </div>
+            <div id="vocab-mode-switcher" class="grid-2">
+              <button type="button" class="btn btn-primary" id="mode-quiz-btn" onclick="setVocabMode('quiz')">Trắc nghiệm A-B-C-D</button>
+              <button type="button" class="btn btn-secondary" id="mode-type-btn" onclick="setVocabMode('type')">Nhìn Việt gõ Anh</button>
+            </div>
+            <button type="button" id="exit-review-btn" class="btn btn-danger btn-block"
+              style="display:none; margin-top:8px;" onclick="exitReviewMode()">❌ Thoát chế độ ôn tập đã thuộc (Trở về học mới)</button>
+          </div>
+
+          <div class="card" id="vocab-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="tag" id="v-badge">Bậc 1 • Nail</span>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn btn-sm btn-secondary" onclick="speakText(currentVocab.en)">🔊 Nghe</button>
+                <button type="button" class="btn btn-sm btn-success" id="master-action-btn"
+                  onclick="markCurrentAsMastered()">✅ Đánh dấu Đã thuộc</button>
+              </div>
+            </div>
+
+            <div class="word-box">
+              <div class="word-main" id="v-prompt">...</div>
+              <div class="word-sub" id="v-phonetic"></div>
+              <div class="word-sub" id="v-termNote"></div>
+            </div>
+
+            <div id="v-quiz-area"></div>
+
+            <div id="v-type-area" style="display:none;">
+              <input type="text" id="v-input" placeholder="Gõ từ tiếng Anh tương ứng..."
+                onkeyup="if(event.key==='Enter') checkTypedVocab()" />
+              <button type="button" class="btn btn-primary btn-block" style="margin-top:8px;"
+                onclick="checkTypedVocab()">Kiểm tra đáp án</button>
+            </div>
+
+            <div id="v-feedback" class="feedback-box"></div>
+
+            <div style="display:flex; gap:8px; margin-top:12px;">
+              <button type="button" class="btn btn-secondary btn-block" onclick="nextVocabQueue()">Từ tiếp theo trong hàng đợi ➔</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== KHO TỪ VỰNG & ÔN TẬP ==================== -->
+        <div id="tab-vocab-store" class="tab-content">
+          <div class="card">
+            <div class="card-title">
+              <span>📚 Kho Quản Lý &amp; Ôn Tập Từ Vựng</span>
+              <span class="tag" id="store-stats">0 tổng số</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">
+              Quản lý các từ đã thuộc và bấm <b>Ôn tập</b> để luyện lại toàn bộ từ đã nhớ bất cứ lúc nào!
+            </p>
+            <div class="grid-2">
+              <button type="button" class="btn btn-primary" onclick="renderVocabStore('unmastered')">Từ chưa thuộc (Cần cày)</button>
+              <button type="button" class="btn btn-success" onclick="renderVocabStore('mastered')">Từ đã thuộc (Đã nhớ)</button>
+            </div>
+            <button type="button" class="btn btn-warning btn-block" style="margin-top:8px;"
+              onclick="startReviewMastered()">🔄 Ôn tập lại tất cả từ Đã thuộc</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title" id="store-list-title">Danh sách từ vựng</div>
+            <div id="vocab-store-list" style="max-height: 400px; overflow-y: auto;"></div>
+          </div>
+        </div>
+
+        <!-- ==================== 2. LUYỆN NGHE CHÉP CHÍNH TẢ ==================== -->
+        <div id="tab-dictation" class="tab-content">
+          <div class="card">
+            <div class="card-title">
+              <span>Chọn chủ đề luyện nghe chép chính tả</span>
+            </div>
+            <select id="lesson-select" onchange="loadSelectedLesson()"></select>
+          </div>
+
+          <div class="card">
+            <div class="audio-player-card">
+              <p style="font-size:12px; color:var(--muted); margin-bottom:6px;" id="dict-progress">Hội thoại #1 • Câu 1 / 5</p>
+              <div style="font-size: 18px; font-weight: 700; color: #1e3a8a; margin-bottom: 12px;">🎧 Bấm nghe âm thanh và gõ lại chính xác</div>
+              <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
+                <button type="button" class="btn btn-primary" onclick="playCurrentAudio(1.0)">🔊 Nghe chuẩn (1.0x)</button>
+                <button type="button" class="btn btn-warning" onclick="playCurrentAudio(0.75)">🐢 Nghe chậm (0.75x)</button>
+              </div>
+            </div>
+
+            <div class="controls-row">
+              <button type="button" class="btn btn-primary" onclick="playCurrentAudio()">Nhấn Crtl để lặp lại</button>
+              <button type="button" class="btn btn-secondary" onclick="prevDictSentence()">⬅ Câu trước</button>
+              <button type="button" class="btn btn-secondary" onclick="nextDictSentence()">Câu sau ➔</button>
+              <button type="button" class="btn btn-warning" onclick="toggleFullScript()">👁️ Xem toàn bộ Script</button>
+            </div>
+
+            <textarea id="dict-input" rows="2" placeholder="Gõ lại chính xác từng từ tiếng Anh bạn vừa nghe..."
+              onkeydown="handleDictKey(event)"></textarea>
+            <button type="button" class="btn btn-success btn-block" style="margin-top:8px;" onclick="checkDictation()">Kiểm tra chính tả (Enter)</button>
+
+            <div id="dict-result" class="diff-result" style="display:none;"></div>
+            <div id="full-script-box"
+              style="display:none; margin-top:12px; max-height:220px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; padding:6px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 3. NGỮ PHÁP 12 THÌ ==================== -->
+        <div id="tab-grammar" class="tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleGrammarReview()">
+              📋 Xem lại câu đã làm (<span id="g-done-count">0</span>)
+            </button>
+          </div>
+
+          <div id="grammar-review-panel" class="card grammar-review-panel" style="display:none;">
+            <div class="g-review-header">
+              <div>
+                <h3 style="margin:0;">📚 Danh sách câu ngữ pháp đã làm</h3>
+                <div style="font-size:12.5px; color:var(--muted); margin-top:2px;">
+                  Tick vào ô checkbox A, B, C, D để ôn lại và kiểm tra đúng/sai ngay lập tức.
+                </div>
+              </div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button type="button" class="btn btn-sm btn-primary" onclick="toggleGrammarReview(false)">Đóng</button>
+              </div>
+            </div>
+            <div id="grammar-review-content" class="grammar-review-content"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Chọn thì cần luyện tập</div>
+            <p style="font-size:12px; color:var(--primary); font-weight:700; margin-bottom:4px;">★ 4 Thì Cốt Lõi (Mục tiêu 300 câu/thì):</p>
+            <div id="core-tenses"></div>
+            <p style="font-size:12px; color:var(--muted); font-weight:700; margin:8px 0 4px;">8 Thì Bổ Trợ (Mục tiêu 100 câu/thì):</p>
+            <div id="other-tenses"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span id="g-tense-name">Hiện tại đơn</span>
+              <span class="tag" id="g-target-badge">Bộ 300 câu</span>
+            </div>
+            <div style="background:#f1f5f9; padding:10px; border-radius:8px; font-size:13px; margin-bottom:12px;"
+              id="g-formula">
+              Công thức: S + V(s/es) | Thói quen, sự thật hiển nhiên.
+            </div>
+
+            <p style="font-size:15px; font-weight:600; margin-bottom:12px;" id="g-question">Loading...</p>
+            <div id="g-options"></div>
+            <div id="g-feedback" class="feedback-box"></div>
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top:10px;" onclick="nextGrammar()">Câu bài tập tiếp theo ➔</button>
+          </div>
+        </div>
+
+        <!-- ==================== 4. LUYỆN NÓI (SPEAKING) ==================== -->
+        <div id="tab-speaking" class="tab-content">
+          <div class="card">
+            <div class="card-title">Phương pháp Shadowing &amp; Phản xạ</div>
+            <p style="font-size:13px; color:var(--muted); line-height:1.5;">
+              1. <b>Shadowing:</b> Nghe mẫu câu -&gt; Bấm Micro đọc nhại lại để máy chấm điểm phát âm.<br />
+              2. <b>Role-play:</b> Đọc câu hỏi khách Tây -&gt; Tự trả lời -&gt; Xem mẫu câu chuẩn.
+            </p>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              <span>Luyện phát âm qua Micro</span>
+              <span class="tag" id="sp-topic">Tư vấn Nail/Mi</span>
+            </div>
+            <div class="word-box">
+              <div class="word-main" style="font-size:18px;" id="sp-sentence">"What shape and length would you like?"</div>
+              <div class="word-sub" id="sp-meaning">Hôm nay chị muốn làm dáng móng nào ạ?</div>
+            </div>
+
+            <div class="grid-2">
+              <button type="button" class="btn btn-secondary" onclick="speakText(currentSpeak.en, 0.9)">🔊 Nghe mẫu</button>
+              <button type="button" class="btn btn-danger" id="mic-btn" onclick="startSpeechRecognition()">🎙️ Bấm để nói</button>
+            </div>
+
+            <div id="sp-result" class="feedback-box"></div>
+
+            <button type="button" class="btn btn-primary btn-block" id="next-speaking-btn" style="margin-top:12px;"
+              onclick="nextSpeaking()">
+              Mẫu câu tiếp theo ➔ (Cần ≥ 80/100 điểm)
+            </button>
+
+            <div class="spoken-history-box">
+              <div class="spoken-history-head">
+                <span>📝 Danh sách câu đã đọc (<span id="spoken-history-count">0</span>)</span>
+              </div>
+              <div id="spoken-history-list" class="spoken-history-list">
+                <div class="spoken-empty">Chưa có câu nào được ghi nhận. Bấm "🎙️ Bấm để nói" để bắt đầu nhé!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 5. ĐỘNG TỪ BẤT QUY TẮC ==================== -->
+        <div id="tab-verbs" class="tab-content">
+          <div class="card">
+            <div class="card-title">Tra cứu Toàn bộ Động từ bất quy tắc</div>
+            <input type="text" id="verb-search" placeholder="Gõ động từ tiếng Anh hoặc nghĩa tiếng Việt..."
+              oninput="filterVerbs()" />
+            <div style="margin-top:12px; overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>V1 (Nguyên mẫu)</th>
+                    <th>V2 (Quá khứ)</th>
+                    <th>V3 (Phân từ 2)</th>
+                    <th>Nghĩa tiếng Việt</th>
+                  </tr>
+                </thead>
+                <tbody id="verb-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 6. SỔ TAY & CÂU SAI ==================== -->
+        <div id="tab-notebook" class="tab-content">
+          <div class="card">
+            <div class="card-title">
+              <span>🚨 Ngân hàng câu làm sai</span>
+              <button type="button" class="btn btn-sm btn-danger" onclick="clearMistakes()">Xóa hết</button>
+            </div>
+            <div id="mistake-list" style="font-size:13px; color:var(--muted);">Chưa có câu sai nào. Hãy luyện tập tiếp nhé!</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 1/5: KHUNG DỊCH & GIẢI THÍCH TỪ -->
+      <aside class="learning-translator-col card" id="smart-dict-widget">
+        <div class="sd-header">
+          <div class="sd-title">🌐 Dịch &amp; Giải thích từ</div>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="swapTranslateDirection()">
+            ⇄ <span id="sd-dir-label">Việt → Anh</span>
+          </button>
+        </div>
+
+        <textarea id="sd-input" class="sd-textarea" rows="3"
+          placeholder="Nhập từ hoặc câu tiếng Việt (hoặc bấm ⇄ để dịch Anh → Việt)..."
+          onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); runSmartTranslate(); }"></textarea>
+
+        <div class="sd-actions">
+          <button type="button" class="btn btn-sm btn-primary" onclick="runSmartTranslate()">Dịch &amp; Giải thích</button>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="clearSmartTranslate()">Xóa</button>
+        </div>
+
+        <div id="sd-result" class="sd-result">
+          <div class="sd-placeholder">
+            Gõ từ tiếng Anh hoặc tiếng Việt để xem bản dịch kèm phân tích từ loại, giải thích nghĩa chi tiết và ví dụ.
+          </div>
+        </div>
+      </aside>
+
+      <!-- 1/5: KHOẢNG TRỐNG -->
+      <div class="learning-spacer-col" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
