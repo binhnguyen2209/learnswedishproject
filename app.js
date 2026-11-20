@@ -126,7 +126,7 @@ function updateAuthUI() {
     if (loginBtn) loginBtn.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = 'inline-flex';
   } else {
-    if (statusEl) statusEl.innerText = 'Chưa đăng nhập (máy này)';
+    if (statusEl) statusEl.innerText = 'Inte inloggad';
     if (loginBtn) loginBtn.style.display = 'inline-flex';
     if (logoutBtn) logoutBtn.style.display = 'none';
   }
@@ -377,7 +377,7 @@ function getPoolSource() {
 
 function initVocabQueue(autoSpeak = true) {
   isReviewingMastered = false;
-  document.getElementById('vocab-mode-title').innerText = 'Cài đặt bài học từ vựng (Hàng đợi 10 từ xoay vòng)';
+  document.getElementById('vocab-mode-title').innerText = 'Ordförrådsinställningar';
   document.getElementById('normal-vocab-filters').style.display = 'grid';
   document.getElementById('vocab-mode-switcher').style.display = 'grid';
   document.getElementById('exit-review-btn').style.display = 'none';
@@ -1338,7 +1338,7 @@ function updateNextSpeakingButtonUI() {
     btn.innerText = `Mẫu câu tiếp theo ➔ (Đã đạt ${lastSpeakingScore}/100)`;
   } else {
     btn.classList.add('btn-locked');
-    btn.innerText = `🔒 Mẫu câu tiếp theo (Cần ≥ ${PASS_SCORE_THRESHOLD}/100 điểm)`;
+    btn.innerText = `🔒 Nästa mening ➔ (Kräver ≥ ${PASS_SCORE_THRESHOLD}/100 poäng)`;
   }
 }
 
@@ -1517,15 +1517,15 @@ function renderSpokenHistory() {
               <span class="spoken-score-badge ${badgeClass}">${statusText}</span>
               <span style="font-size:11px; color:var(--muted);">${item.time || ''}</span>
             </div>
-            <div class="spoken-said-text">Bạn đọc: "${item.said}"</div>
+            <div class="spoken-said-text">Du läste: "${item.said}"</div>
             <div class="spoken-target-sub">
-              ${item.targetEn ? `Mẫu chuẩn: <b>${item.targetEn}</b>` : ''}${item.targetVi ? ` • ${item.targetVi}` : ''}
+              ${item.targetEn ? `Mall: <b>${item.targetEn}</b>` : ''}${item.targetVi ? ` • ${item.targetVi}` : ''}
             </div>
           </div>
           <div class="spoken-history-actions">
-            <button type="button" class="btn btn-sm btn-secondary" onclick="replaySpokenText('${escapedTarget}', 0.9, event)">🔊 Nghe mẫu</button>
-            <button type="button" class="btn btn-sm btn-primary" onclick="replaySpokenText('${escapedSaid}', 0.95, event)">🗣️ Nghe câu đọc</button>
-            <button type="button" class="btn btn-sm btn-warning" onclick="practiceFromHistory('${item.id}')">🎙️ Đọc chấm lại</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="replaySpokenText('${escapedTarget}', 0.9, event)">🔊 Lyssna</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="replaySpokenText('${escapedSaid}', 0.95, event)">🗣️ Lyssna på din egen röst</button>
+            <button type="button" class="btn btn-sm btn-warning" onclick="practiceFromHistory('${item.id}')">🎙️ Läs upp igen</button>
           </div>
         </div>
       `;

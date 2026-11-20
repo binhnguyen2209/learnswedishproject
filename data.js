@@ -38,7 +38,7 @@ const TENSES = [
   },
   {
     id: "en_ett",
-    name: "Danh từ En & Ett (Mạo từ xác định)",
+    name: "En- och ett-ord (Bestämd artikel)",
     core: false,
     target: 100,
     formula: "En -> -en / -n | Ett -> -et / -t",
