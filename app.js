@@ -27,7 +27,7 @@ function getEmptyProgressState() {
       maxSentenceIdx: 0
     },
     grammarProgressStore: {
-      lastTense: 'pres_simple',
+      lastTense: 'presens',
       byTense: {}
     },
     speaking_progress: 0,
@@ -47,7 +47,7 @@ function applyProgressStateToUI(state) {
   grammarProgressStore = {
     lastTense: typeof state.grammarProgressStore?.lastTense === 'string'
       ? state.grammarProgressStore.lastTense
-      : 'pres_simple',
+      : 'presens',
     byTense:
       state.grammarProgressStore?.byTense && typeof state.grammarProgressStore.byTense === 'object'
         ? state.grammarProgressStore.byTense
@@ -66,15 +66,15 @@ function applyProgressStateToUI(state) {
     localStorage.setItem(SPEAKING_IDX_KEY, String(safeSpeakIdx));
   }
 
-  currentTense = grammarProgressStore.lastTense || 'pres_simple';
+  currentTense = grammarProgressStore.lastTense || 'presens';
   currentDictIdx = 0;
   grammarIdx = 0;
 
-  localStorage.setItem('mastered_vocab_ids', JSON.stringify(masteredIds));
+  localStorage.setItem('sv_mastered_vocab_ids', JSON.stringify(masteredIds));
   localStorage.setItem(DICT_PROGRESS_KEY, JSON.stringify(dictProgressStore));
   localStorage.setItem(LISTENING_PROGRESS_KEY, JSON.stringify(listeningProgressStore));
   localStorage.setItem(GRAMMAR_PROGRESS_KEY, JSON.stringify(grammarProgressStore));
-  localStorage.setItem('eng_mistakes', JSON.stringify(mistakes));
+  localStorage.setItem('sv_mistakes', JSON.stringify(mistakes));
 
   initVocabQueue(false);
   initLessonSelect();
@@ -187,7 +187,7 @@ async function loadUserProgressFromFirestore(uid) {
         masteredIds: Array.isArray(data.mastered_vocab_ids) ? data.mastered_vocab_ids : [],
         dictProgressStore: data.dict_progress || { lastLessonIdx: 0, byLessonKey: {} },
         listeningProgressStore: data.listening_progress || { currentSentenceIdx: 0, maxSentenceIdx: 0 },
-        grammarProgressStore: data.grammar_progress || { lastTense: 'pres_simple', byTense: {} },
+        grammarProgressStore: data.grammar_progress || { lastTense: 'presens', byTense: {} },
         speaking_progress:
           Number.isInteger(data.speaking_progress) && data.speaking_progress >= 0
             ? data.speaking_progress
@@ -245,11 +245,11 @@ function syncProgressToCloud() {
 }
 
 /* ================= GLOBAL STATE & PROGRESS ================= */
-const DICT_PROGRESS_KEY = 'sweden_dict_progress_v1';
-const LISTENING_PROGRESS_KEY = 'sweden_listening_progress_v1';
-const GRAMMAR_PROGRESS_KEY = 'sweden_grammar_progress_v1';
+const DICT_PROGRESS_KEY = 'sv_dict_progress_v1';
+const LISTENING_PROGRESS_KEY = 'sv_listening_progress_v1';
+const GRAMMAR_PROGRESS_KEY = 'sv_grammar_progress_v1';
 
-let masteredIds = JSON.parse(localStorage.getItem('mastered_vocab_ids')) || [];
+let masteredIds = JSON.parse(localStorage.getItem('sv_mastered_vocab_ids')) || [];
 
 let vocabQueue = [];
 let queueIdx = 0;
@@ -287,25 +287,25 @@ function loadGrammarSavedProgress() {
     const raw = JSON.parse(localStorage.getItem(GRAMMAR_PROGRESS_KEY));
     if (raw && typeof raw === 'object') {
       return {
-        lastTense: typeof raw.lastTense === 'string' ? raw.lastTense : 'pres_simple',
+        lastTense: typeof raw.lastTense === 'string' ? raw.lastTense : 'presens',
         byTense: raw.byTense && typeof raw.byTense === 'object' ? raw.byTense : {}
       };
     }
   } catch (e) {}
-  return { lastTense: 'pres_simple', byTense: {} };
+  return { lastTense: 'presens', byTense: {} };
 }
 
 let dictProgressStore = loadDictSavedProgress();
 let listeningProgressStore = loadListeningSavedProgress();
 let grammarProgressStore = loadGrammarSavedProgress();
 
-let currentTense = grammarProgressStore.lastTense || 'pres_simple';
+let currentTense = grammarProgressStore.lastTense || 'presens';
 let filteredGrammar = [];
 let grammarIdx = 0;
 
 let currentSpeak = SPEAKING_DATA[0];
 
-let mistakes = JSON.parse(localStorage.getItem('eng_mistakes')) || [];
+let mistakes = JSON.parse(localStorage.getItem('sv_mistakes')) || [];
 
 /* ================= DRAWER MENU & NAVIGATION ================= */
 function openMenu() {
@@ -459,7 +459,7 @@ function renderVocab(autoSpeak = true) {
       .join('');
   } else {
     document.getElementById('v-prompt').innerText = currentVocab.vi;
-    document.getElementById('v-phonetic').innerText = '(Gõ từ tiếng Anh tương ứng)';
+    document.getElementById('v-phonetic').innerText = '(Gõ từ tiếng Thụy Điển tương ứng)';
     document.getElementById('v-input').value = '';
   }
 }
@@ -503,7 +503,7 @@ function markCurrentAsMastered() {
   if (!currentVocab) return;
   if (!masteredIds.includes(currentVocab.id)) {
     masteredIds.push(currentVocab.id);
-    localStorage.setItem('mastered_vocab_ids', JSON.stringify(masteredIds));
+    localStorage.setItem('sv_mastered_vocab_ids', JSON.stringify(masteredIds));
     syncProgressToCloud();
   }
   vocabQueue.splice(queueIdx % vocabQueue.length, 1);
@@ -568,7 +568,7 @@ function toggleStoreMaster(id, filterType) {
   } else {
     masteredIds.push(id);
   }
-  localStorage.setItem('mastered_vocab_ids', JSON.stringify(masteredIds));
+  localStorage.setItem('sv_mastered_vocab_ids', JSON.stringify(masteredIds));
   syncProgressToCloud();
   renderVocabStore(filterType);
   if (!isReviewingMastered) initVocabQueue();
@@ -836,7 +836,7 @@ function checkDictation() {
 }
 
 /* --- 4. GRAMMAR (LƯU CÂU ĐANG HỌC THEO TỪNG THÌ) --- */
-const GRAMMAR_DONE_KEY = 'sweden_grammar_done_v1';
+const GRAMMAR_DONE_KEY = 'sv_grammar_done_v1';
 let grammarDoneMap = JSON.parse(localStorage.getItem(GRAMMAR_DONE_KEY)) || {};
 let shuffledGrammarByTense = {};
 
@@ -1240,8 +1240,8 @@ function renderGrammarReview() {
 }
 
 /* --- 5. SPEAKING & PRONUNCIATION SCORING (>= 80 TO ADVANCE) --- */
-const SPOKEN_HISTORY_KEY = 'sweden_spoken_history_v1';
-const SPEAKING_IDX_KEY = 'sweden_speaking_idx_v1';
+const SPOKEN_HISTORY_KEY = 'sv_spoken_history_v1';
+const SPEAKING_IDX_KEY = 'sv_speaking_idx_v1';
 const PASS_SCORE_THRESHOLD = 80;
 
 let speakIdx = parseInt(localStorage.getItem(SPEAKING_IDX_KEY), 10) || 0;
@@ -1273,7 +1273,7 @@ function setText(id, val) {
 function normalizePronText(str) {
   return String(str || '')
     .toLowerCase()
-    .replace(/[^a-z0-9'\s]/g, ' ')
+    .replace(/[^a-zåäö0-9'\s]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -1541,7 +1541,7 @@ function startSpeechRecognition(explicitTarget = null) {
   const targetEn = targetObj ? targetObj.en : '';
 
   const rec = new SpeechRec();
-  rec.lang = 'en-US';
+  rec.lang = 'sv-SE';
   const micBtn = document.getElementById('mic-btn');
   micBtn.classList.add('mic-pulse');
   micBtn.innerText = '🎙️ Đang nghe...';
@@ -1632,25 +1632,26 @@ function startSpeechRecognition(explicitTarget = null) {
   rec.start();
 }
 
-/* --- 6. VERBS --- */
+/* --- 6. VERBS (Infinitiv - Presens - Preteritum - Supinum - vi) --- */
 function renderVerbs(list) {
   const tbody = document.getElementById('verb-table-body');
   if (tbody) {
     tbody.innerHTML = list
-      .map((v) => `<tr><td><b>${v.v1}</b></td><td>${v.v2}</td><td>${v.v3}</td><td>${v.vi}</td></tr>`)
+      .map((v) => `<tr><td><b>${v.infinitiv || ''}</b></td><td>${v.presens || ''}</td><td>${v.preteritum || ''}</td><td>${v.supinum || ''}</td><td>${v.vi || ''}</td></tr>`)
       .join('');
   }
 }
 
 function filterVerbs() {
-  const kw = document.getElementById('verb-search').value.toLowerCase();
+  const kw = document.getElementById('verb-search').value.toLowerCase().trim();
   renderVerbs(
     IRREGULAR_VERBS.filter(
       (v) =>
-        v.v1.includes(kw) ||
-        v.v2.includes(kw) ||
-        v.v3.includes(kw) ||
-        v.vi.toLowerCase().includes(kw)
+        (v.infinitiv || '').toLowerCase().includes(kw) ||
+        (v.presens || '').toLowerCase().includes(kw) ||
+        (v.preteritum || '').toLowerCase().includes(kw) ||
+        (v.supinum || '').toLowerCase().includes(kw) ||
+        (v.vi || '').toLowerCase().includes(kw)
     )
   );
 }
@@ -1659,26 +1660,26 @@ function filterVerbs() {
 function addMistake(text) {
   if (!mistakes.includes(text)) {
     mistakes.unshift(text);
-    localStorage.setItem('eng_mistakes', JSON.stringify(mistakes.slice(0, 50)));
+    localStorage.setItem('sv_mistakes', JSON.stringify(mistakes.slice(0, 50)));
     syncProgressToCloud();
   }
 }
 
 function clearMistakes() {
   mistakes = [];
-  localStorage.removeItem('eng_mistakes');
+  localStorage.removeItem('sv_mistakes');
   syncProgressToCloud();
   renderNotebook();
 }
 
-/* function renderNotebook() {
+function renderNotebook() {
   const mList = document.getElementById('mistake-list');
   if (mList)
     mList.innerHTML = mistakes.length
       ? mistakes.map((m) => `<div style="padding:6px 0; border-bottom:1px solid #eee;">• ${m}</div>`).join('')
       : 'Chưa có câu sai nào!';
   const cList = document.getElementById('cheatsheet-list');
-  if (cList) {
+  if (cList && typeof CHEAT_SHEET !== 'undefined' && Array.isArray(CHEAT_SHEET)) {
     cList.innerHTML = CHEAT_SHEET.map(
       (c) =>
         `<div style="margin-bottom:10px;">
@@ -1693,31 +1694,24 @@ function clearMistakes() {
         </div>`
     ).join('');
   }
-} */
+}
 
 let speakCallCount = 0;
 
 function speakText(text, rate = 0.95) {
   speakCallCount++;
-  console.trace();
-
-  if (isFirstTime) {
-    isFirstTime = false;
-    return;
-  }
   if (!text || !('speechSynthesis' in window)) return;
 
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'en-US';
+  utter.lang = 'sv-SE';
   utter.rate = rate;
 
   const voices = window.speechSynthesis.getVoices() || [];
   const preferredVoice =
-    voices.find((v) => /samantha/i.test(v.name) && /^en/i.test(v.lang)) ||
-    voices.find((v) => /^en-US/i.test(v.lang) && !/compact/i.test(v.name)) ||
-    voices.find((v) => /^en-US/i.test(v.lang)) ||
-    voices.find((v) => /^en/i.test(v.lang));
+    voices.find((v) => /^sv-SE/i.test(v.lang) && !/compact/i.test(v.name)) ||
+    voices.find((v) => /^sv-SE/i.test(v.lang)) ||
+    voices.find((v) => /^sv/i.test(v.lang));
 
   if (preferredVoice) {
     utter.voice = preferredVoice;
@@ -1725,21 +1719,21 @@ function speakText(text, rate = 0.95) {
 
   window.speechSynthesis.speak(utter);
 }
-/* --- DỊCH VIỆT <-> ANH & GIẢI THÍCH CHI TIẾT TỪ TIẾNG ANH --- */
-let sdDirection = 'vi-en'; // 'vi-en' hoặc 'en-vi'
+/* --- DỊCH VIỆT <-> THỤY ĐIỂN & TRA CỨU TỪ VỰNG --- */
+let sdDirection = 'vi-sv'; // 'vi-sv' hoặc 'sv-vi'
 
 function swapTranslateDirection() {
-  sdDirection = sdDirection === 'vi-en' ? 'en-vi' : 'vi-en';
+  sdDirection = sdDirection === 'vi-sv' ? 'sv-vi' : 'vi-sv';
   const labelEl = document.getElementById('sd-dir-label');
   const inputEl = document.getElementById('sd-input');
   if (labelEl) {
-    labelEl.innerText = sdDirection === 'vi-en' ? 'Việt → Anh' : 'Anh → Việt';
+    labelEl.innerText = sdDirection === 'vi-sv' ? 'Việt → Thụy Điển' : 'Thụy Điển → Việt';
   }
   if (inputEl) {
     inputEl.placeholder =
-      sdDirection === 'vi-en'
-        ? 'Nhập từ hoặc câu tiếng Việt (hoặc bấm ⇄ để dịch Anh → Việt)...'
-        : 'Nhập từ hoặc câu tiếng Anh (hoặc bấm ⇄ để dịch Việt → Anh)...';
+      sdDirection === 'vi-sv'
+        ? 'Nhập từ hoặc câu tiếng Việt (hoặc bấm ⇄ để dịch Thụy Điển → Việt)...'
+        : 'Nhập từ hoặc câu tiếng Thụy Điển (hoặc bấm ⇄ để dịch Việt → Thụy Điển)...';
   }
 }
 
@@ -1748,7 +1742,7 @@ function clearSmartTranslate() {
   const resEl = document.getElementById('sd-result');
   if (inputEl) inputEl.value = '';
   if (resEl) {
-    resEl.innerHTML = `<div class="sd-placeholder">Gõ từ tiếng Anh hoặc tiếng Việt để xem bản dịch kèm phân tích từ loại, giải thích nghĩa chi tiết và ví dụ.</div>`;
+    resEl.innerHTML = `<div class="sd-placeholder">Gõ từ hoặc câu tiếng Thụy Điển / tiếng Việt để xem bản dịch, phiên âm và ghi chú chuyên ngành.</div>`;
   }
 }
 
@@ -1760,40 +1754,13 @@ async function fetchTranslationText(text, sourceLang, targetLang) {
   return data?.responseData?.translatedText || '';
 }
 
-function findLocalVocabMatch(enQuery) {
-  const clean = String(enQuery || '').trim().toLowerCase();
+function findLocalVocabMatch(svQuery) {
+  const clean = String(svQuery || '').trim().toLowerCase();
   if (!clean || typeof VOCAB_DATA === 'undefined' || !Array.isArray(VOCAB_DATA)) return null;
-  return VOCAB_DATA.find((item) => String(item.en || '').trim().toLowerCase() === clean) || null;
-}
-
-async function fetchEnglishWordDetails(enWord) {
-  const word = String(enWord || '').trim().split(/\s+/)[0].replace(/[^a-zA-Z'-]/g, '');
-  if (!word) return null;
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if (!res.ok) return null;
-    const json = await res.json();
-    const entry = Array.isArray(json) ? json[0] : null;
-    if (!entry) return null;
-
-    const phonetic =
-      entry.phonetic ||
-      (entry.phonetics || []).find((p) => p.text)?.text ||
-      '';
-
-    const meanings = (entry.meanings || []).slice(0, 2).map((m) => {
-      const firstDef = (m.definitions && m.definitions[0]) || {};
-      return {
-        partOfSpeech: m.partOfSpeech || '',
-        definitionEn: firstDef.definition || '',
-        exampleEn: firstDef.example || ''
-      };
-    });
-
-    return { word: entry.word || word, phonetic, meanings };
-  } catch (_) {
-    return null;
-  }
+  return VOCAB_DATA.find((item) => {
+    const w = String(item.en || '').trim().toLowerCase();
+    return w === clean || w.replace(/^(en|ett|att)\s+/, '') === clean;
+  }) || null;
 }
 
 function escapeJsSingle(str) {
@@ -1811,60 +1778,41 @@ async function runSmartTranslate() {
     return;
   }
 
-  resEl.innerHTML = `<div class="sd-placeholder">⏳ Đang dịch và phân tích chi tiết...</div>`;
+  resEl.innerHTML = `<div class="sd-placeholder">⏳ Đang dịch sang tiếng ${sdDirection === 'vi-sv' ? 'Thụy Điển' : 'Việt'}...</div>`;
 
-  const isViToEn = sdDirection === 'vi-en';
-  const sourceLang = isViToEn ? 'vi' : 'en';
-  const targetLang = isViToEn ? 'en' : 'vi';
+  const isViToSv = sdDirection === 'vi-sv';
+  const sourceLang = isViToSv ? 'vi' : 'sv';
+  const targetLang = isViToSv ? 'sv' : 'vi';
 
   try {
     const translated = await fetchTranslationText(rawText, sourceLang, targetLang);
-    const englishTarget = isViToEn ? translated : rawText;
+    const swedishTarget = isViToSv ? translated : rawText;
 
-    const localMatch = findLocalVocabMatch(englishTarget);
-    const dictDetails = await fetchEnglishWordDetails(englishTarget);
+    const localMatch = findLocalVocabMatch(swedishTarget);
 
-    let viExplanation = '';
-    if (dictDetails && dictDetails.meanings.length > 0 && dictDetails.meanings[0].definitionEn) {
-      try {
-        viExplanation = await fetchTranslationText(dictDetails.meanings[0].definitionEn, 'en', 'vi');
-      } catch (_) {
-        viExplanation = '';
-      }
-    }
     let dictHtml = '';
-    if (dictDetails && dictDetails.meanings.length > 0) {
-      const itemsHtml = dictDetails.meanings
-        .map((m, idx) => `
-          <div style="${idx > 0 ? 'margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;' : ''}">
-            <span class="sd-pos-tag">${m.partOfSpeech || 'từ vựng'}</span>
-            <span>${m.definitionEn}</span>
-            ${idx === 0 && viExplanation ? `<div style="margin-top:4px; color:#0f766e;"><b>Giải thích tiếng Việt:</b> ${viExplanation}</div>` : ''}
-            ${m.exampleEn ? `<div style="margin-top:4px; font-style:italic; color:#475569;">Ví dụ: "${m.exampleEn}"</div>` : ''}
-          </div>
-        `)
-        .join('');
-
+    if (localMatch) {
       dictHtml = `
         <div class="sd-detail-card">
           <div style="font-weight:700; margin-bottom:6px;">
-            📖 Giải thích từ "${dictDetails.word}" ${dictDetails.phonetic ? `<span style="font-weight:400; color:#64748b;">${dictDetails.phonetic}</span>` : ''}
+            📖 Có trong kho từ vựng: "${localMatch.en}" ${localMatch.phonetic ? `<span style="font-weight:400; color:#64748b;">${localMatch.phonetic}</span>` : ''}
           </div>
-          ${itemsHtml}
+          <div><span class="sd-pos-tag">Bậc ${localMatch.level} • ${String(localMatch.topic || '').toUpperCase()}</span> <b>${localMatch.vi}</b></div>
+          ${localMatch.termNote ? `<div style="margin-top:6px; color:#0f766e;">💡 <b>Ghi chú chuyên ngành:</b> ${localMatch.termNote}</div>` : ''}
         </div>
       `;
-    } else if (!localMatch) {
+    } else {
       dictHtml = `
         <div class="sd-detail-card">
-          <div style="font-weight:700; margin-bottom:4px;">💡 Giải thích ngữ cảnh</div>
-          <div>Cụm/từ "<b>${englishTarget}</b>" được dùng ở dạng ${isViToEn ? 'tương đương bản dịch tiếng Anh phía trên' : 'tiếng Anh như bạn vừa nhập'}. Gõ từ đơn tiếng Anh nếu muốn xem phân tích từ loại và ví dụ chi tiết hơn.</div>
+          <div style="font-weight:700; margin-bottom:4px;">💡 Gợi ý luyện phát âm</div>
+          <div>Bấm nút <b>🔊</b> bên cạnh bản dịch để nghe giọng đọc tiếng Thụy Điển chuẩn của cụm/từ "<b>${swedishTarget}</b>".</div>
         </div>
       `;
     }
 
     const speakBtnHtml =
-      typeof speakText === 'function' && englishTarget
-        ? `<button type="button" class="btn btn-sm btn-secondary" onclick="speakText('${escapeJsSingle(englishTarget)}', 0.95)">🔊</button>`
+      typeof speakText === 'function' && swedishTarget
+        ? `<button type="button" class="btn btn-sm btn-secondary" onclick="speakText('${escapeJsSingle(swedishTarget)}', 0.95)">🔊</button>`
         : '';
 
     resEl.innerHTML = `
