@@ -1697,7 +1697,7 @@ function renderNotebook() {
 }
 
 let speakCallCount = 0;
-
+let swedishVoice = null;
 function speakText(text, rate = 0.95) {
   speakCallCount++;
   if (!text || !('speechSynthesis' in window)) return;
@@ -1707,15 +1707,11 @@ function speakText(text, rate = 0.95) {
   utter.lang = 'sv-SE';
   utter.rate = rate;
 
-  const voices = window.speechSynthesis.getVoices() || [];
-  const preferredVoice =
-    voices.find((v) => /^sv-SE/i.test(v.lang) && !/compact/i.test(v.name)) ||
-    voices.find((v) => /^sv-SE/i.test(v.lang)) ||
-    voices.find((v) => /^sv/i.test(v.lang));
-
-  if (preferredVoice) {
-    utter.voice = preferredVoice;
-  }
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return;
+  const svVoices = voices.filter(v => v.lang.toLowerCase().includes('sv'));
+  const preferredNames = ['Sofie', 'Mattias', 'Google svenska', 'Alva', 'Klara', 'Oskar'];
+  swedishVoice = svVoices.find(v => preferredNames.some(name => v.name.includes(name))) || svVoices[0] || null;
 
   window.speechSynthesis.speak(utter);
 }
