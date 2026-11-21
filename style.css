@@ -400,6 +400,20 @@ body {
   display: block;
 }
 
+#learning-five-layout .learning-main-col > .tab-content {
+  display: none;
+}
+
+#learning-five-layout .learning-main-col > .tab-content.active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+#learning-five-layout .learning-main-col > .tab-content.active > .card {
+  margin-bottom: 0;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -592,20 +606,6 @@ th { background: #f8fafc; font-weight: 700; }
     width: 100%;
     justify-content: flex-end;
   }
-}
-
-.dict-bookmark-bar {
-  margin-top: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%);
-  border: 1px solid #bfdbfe;
-  box-shadow: 0 2px 8px rgba(30, 58, 138, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
 }
 
 .dict-bookmark-info {
@@ -819,6 +819,23 @@ th { background: #f8fafc; font-weight: 700; }
 #next-speaking-btn.btn-locked {
   opacity: 0.65;
   background: #64748b;
+}
+
+#speaking-resume-btn.btn {
+  margin-top: 6px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 9px;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+#speaking-resume-btn.btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
 }
 
 /* ÔN BÀI TẬP NGỮ PHÁP */
@@ -1053,20 +1070,6 @@ th { background: #f8fafc; font-weight: 700; }
   grid-column: 1;
   grid-row: 1;
   min-width: 0;
-}
-
-#learning-five-layout .learning-main-col > .tab-content {
-  display: none;
-}
-
-#learning-five-layout .learning-main-col > .tab-content.active {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-#learning-five-layout .learning-main-col > .tab-content.active > .card {
-  margin-bottom: 0;
 }
 
 #learning-five-layout #smart-dict-widget {

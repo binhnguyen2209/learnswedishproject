@@ -87,7 +87,7 @@
     </div>
   </nav>
 
-<div class="container">
+  <div class="container">
     <div class="learning-five-layout" id="learning-five-layout">
       <!-- 3/5: TOÀN BỘ KHUNG HỌC -->
       <div class="learning-main-col">
@@ -102,36 +102,44 @@
             <div id="normal-vocab-filters" class="grid-2">
               <select id="vocab-level" onchange="initVocabQueue()">
                 <option value="all">Alla nivåer</option>
-                <option value="1">Nivå 1 (A1 – Grundläggande)</option>
-                <option value="2">Nivå 2 (A2 - Sång)</option>
-                <option value="3">Nivå 3 (B1 - Mellan)</option>
-                <option value="4">Nivå 4 (B2 - Högre)</option>
-                <option value="5">Nivå 5 (C1 - Avancerad)</option>
-                <option value="6">Nivå 6 (C2 - Mästerlig)</option>
+                <option value="1">Nivå 1 – Grundläggande</option>
+                <option value="2">Nivå 2 - Sång</option>
+                <option value="3">Nivå 3 - Mellan</option>
+                <option value="4">Nivå 4 - Högre</option>
               </select>
               <select id="vocab-topic" onchange="initVocabQueue()">
                 <option value="all">❖ Alla ämnen</option>
-                <option value="nail">💅 Nagelvård (Nail)</option>
-                <option value="lash">👁️ Fransförlängning (Eyelash)</option>
-                <option value="spa">💆‍♀️ Spa &amp; Hudvård</option>
-                <option value="salon">🗣️ Kundrådgivning på salong</option>
-                <option value="sweden">🇸🇪 Livet i Sverige</option>
-                <option value="personal_and_family">Jag och min familj</option>
+                <option value="salon">💅 Naglar, Fransar &amp; Spa (Salong)</option>
+                <option value="hälsningar_och_vardag">👋 Hälsningar &amp; Vardag</option>
+                <option value="tid_och_siffror">⏰ Tid, Siffror &amp; Schema</option>
+                <option value="familj_och_relationer">👨‍👩‍👧 Familj &amp; Relationer</option>
+                <option value="hem_och_boende">🏠 Hem &amp; Boende</option>
+                <option value="mat_och_dryck">☕ Mat, Dryck &amp; Fika</option>
+                <option value="shopping_och_pengar">🛍️ Shopping, Kläder &amp; Pengar</option>
+                <option value="resor_och_trafik">🚌 Resor &amp; Trafik</option>
+                <option value="hälsa_och_kropp">🏥 Hälsa, Kropp &amp; Sjukvård</option>
+                <option value="arbete_och_samhälle">💼 Arbete, Papper &amp; Samhälle</option>
+                <option value="väder_och_natur">🌤️ Väder, Årstider &amp; Natur</option>
+                <option value="vanliga_verb_och_adjektiv">🔤 Vanliga verb, adjektiv &amp; bindeord</option>
               </select>
             </div>
             <div id="vocab-mode-switcher" class="grid-2">
-              <button type="button" class="btn btn-primary" id="mode-quiz-btn" onclick="setVocabMode('quiz')">Flervalsfrågor</button>
-              <button type="button" class="btn btn-secondary" id="mode-type-btn" onclick="setVocabMode('type')">Från vietnamesiska till svenska</button>
+              <button type="button" class="btn btn-primary" id="mode-quiz-btn"
+                onclick="setVocabMode('quiz')">Flervalsfrågor</button>
+              <button type="button" class="btn btn-secondary" id="mode-type-btn" onclick="setVocabMode('type')">Från
+                vietnamesiska till svenska</button>
             </div>
             <button type="button" id="exit-review-btn" class="btn btn-danger btn-block"
-              style="display:none; margin-top:8px;" onclick="exitReviewMode()">❌ Avsluta repetitionsläge (Återgå till nya ord)</button>
+              style="display:none; margin-top:8px;" onclick="exitReviewMode()">❌ Avsluta repetitionsläge (Återgå till
+              nya ord)</button>
           </div>
 
           <div class="card" id="vocab-card">
             <div style="display:flex; justify-content:space-between; align-items:center;">
               <span class="tag" id="v-badge">Bậc 1 • Nail</span>
               <div style="display:flex; gap:6px;">
-                <button type="button" class="btn btn-sm btn-secondary" onclick="speakText(currentVocab.en)">🔊 Lyssna</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="speakText(currentVocab.sv)">🔊
+                  Lyssna</button>
                 <button type="button" class="btn btn-sm btn-success" id="master-action-btn"
                   onclick="markCurrentAsMastered()">✅ Markera som inlärd</button>
               </div>
@@ -155,7 +163,8 @@
             <div id="v-feedback" class="feedback-box"></div>
 
             <div style="display:flex; gap:8px; margin-top:12px;">
-              <button type="button" class="btn btn-secondary btn-block" onclick="nextVocabQueue()">Nästa ord i kön ➔</button>
+              <button type="button" class="btn btn-secondary btn-block" onclick="nextVocabQueue()">Nästa ord i kön
+                ➔</button>
             </div>
           </div>
         </div>
@@ -171,7 +180,8 @@
               Hantera inlärda ord och klicka på <b>Repetera</b> för att öva på alla ord du redan kan när som helst!
             </p>
             <div class="grid-2">
-              <button type="button" class="btn btn-primary" onclick="renderVocabStore('unmastered')">Ej inlärda ord</button>
+              <button type="button" class="btn btn-primary" onclick="renderVocabStore('unmastered')">Ej inlärda
+                ord</button>
               <button type="button" class="btn btn-success" onclick="renderVocabStore('mastered')">Inlärda ord</button>
             </div>
             <button type="button" class="btn btn-warning btn-block" style="margin-top:8px;"
@@ -195,16 +205,21 @@
 
           <div class="card">
             <div class="audio-player-card">
-              <p style="font-size:12px; color:var(--muted); margin-bottom:6px;" id="dict-progress">Hội thoại #1 • Câu 1 / 5</p>
-              <div style="font-size: 18px; font-weight: 700; color: #1e3a8a; margin-bottom: 12px;">🎧 Klicka för att lyssna och skriv av exakt</div>
+              <p style="font-size:12px; color:var(--muted); margin-bottom:6px;" id="dict-progress">Hội thoại #1 • Câu 1
+                / 5</p>
+              <div style="font-size: 18px; font-weight: 700; color: #1e3a8a; margin-bottom: 12px;">🎧 Klicka för att
+                lyssna och skriv av exakt</div>
               <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
-                <button type="button" class="btn btn-primary" onclick="playCurrentAudio(1.0)">🔊 Normal hastighet (1.0x)</button>
-                <button type="button" class="btn btn-warning" onclick="playCurrentAudio(0.75)">🐢 Långsam hastighet (0.75x)</button>
+                <button type="button" class="btn btn-primary" onclick="playCurrentAudio(1.0)">🔊 Normal hastighet
+                  (1.0x)</button>
+                <button type="button" class="btn btn-warning" onclick="playCurrentAudio(0.75)">🐢 Långsam hastighet
+                  (0.75x)</button>
               </div>
             </div>
 
             <div class="controls-row">
-              <button type="button" class="btn btn-primary" onclick="playCurrentAudio()">Tryck på Ctrl för att upprepa</button>
+              <button type="button" class="btn btn-primary" onclick="playCurrentAudio()">Tryck på Ctrl för att
+                upprepa</button>
               <button type="button" class="btn btn-secondary" onclick="prevDictSentence()">⬅ Föregående mening</button>
               <button type="button" class="btn btn-secondary" onclick="nextDictSentence()">Nästa mening ➔</button>
               <button type="button" class="btn btn-warning" onclick="toggleFullScript()">👁️ Visa hela manuset</button>
@@ -212,7 +227,8 @@
 
             <textarea id="dict-input" rows="2" placeholder="Gõ lại chính xác từng từ tiếng Thụy Điển bạn vừa nghe..."
               onkeydown="handleDictKey(event)"></textarea>
-            <button type="button" class="btn btn-success btn-block" style="margin-top:8px;" onclick="checkDictation()">Kontrollera stavning</button>
+            <button type="button" class="btn btn-success btn-block" style="margin-top:8px;"
+              onclick="checkDictation()">Kontrollera stavning</button>
 
             <div id="dict-result" class="diff-result" style="display:none;"></div>
             <div id="full-script-box"
@@ -223,7 +239,8 @@
 
         <!-- ==================== 3. NGỮ PHÁP 12 THÌ ==================== -->
         <div id="tab-grammar" class="tab-content">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
             <button type="button" class="btn btn-sm btn-secondary" onclick="toggleGrammarReview()">
               📋 Granska besvarade frågor (<span id="g-done-count">0</span>)
             </button>
@@ -246,9 +263,11 @@
 
           <div class="card">
             <div class="card-title">Välj tempus att öva</div>
-            <p style="font-size:12px; color:var(--primary); font-weight:700; margin-bottom:4px;">★ 4 Kärntempus (Mål: 300 frågor/tempus):</p>
+            <p style="font-size:12px; color:var(--primary); font-weight:700; margin-bottom:4px;">★ 4 Kärntempus (Mål:
+              300 frågor/tempus):</p>
             <div id="core-tenses"></div>
-            <p style="font-size:12px; color:var(--muted); font-weight:700; margin:8px 0 4px;">8 Kompletterande tempus (Mål: 100 frågor/tempus):</p>
+            <p style="font-size:12px; color:var(--muted); font-weight:700; margin:8px 0 4px;">8 Kompletterande tempus
+              (Mål: 100 frågor/tempus):</p>
             <div id="other-tenses"></div>
           </div>
 
@@ -265,7 +284,8 @@
             <p style="font-size:15px; font-weight:600; margin-bottom:12px;" id="g-question">Loading...</p>
             <div id="g-options"></div>
             <div id="g-feedback" class="feedback-box"></div>
-            <button type="button" class="btn btn-secondary btn-block" style="margin-top:10px;" onclick="nextGrammar()">Câu bài tập tiếp theo ➔</button>
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top:10px;"
+              onclick="nextGrammar()">Câu bài tập tiếp theo ➔</button>
           </div>
         </div>
 
@@ -281,32 +301,56 @@
 
           <div class="card">
             <div class="card-title">
+              <span>Välj ämne för uttalsträning</span>
+            </div>
+            <select id="speaking-topic-select" onchange="loadSelectedSpeakingTopic()"></select>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
               <span>Uttalsträning via mikrofon</span>
               <span class="tag" id="sp-topic">Rådgivning för naglar/fransar</span>
             </div>
             <div class="word-box">
-              <div class="word-main" style="font-size:18px;" id="sp-sentence">"What shape and length would you like?"</div>
+              <p style="font-size:12px; color:var(--muted); margin-bottom:6px;" id="sp-progress">Topic #1 • Câu 1 / 1
+              </p>
+              <div class="word-main" style="font-size:18px;" id="sp-sentence">"What shape and length would you like?"
+              </div>
               <div class="word-sub" id="sp-meaning">Hôm nay chị muốn làm dáng móng nào ạ?</div>
             </div>
 
             <div class="grid-2">
-              <button type="button" class="btn btn-secondary" onclick="speakText(currentSpeak.en, 0.9)">🔊 Lyssna</button>
-              <button type="button" class="btn btn-danger" id="mic-btn" onclick="startSpeechRecognition()">🎙️ Tryck för att tala</button>
+              <button type="button" class="btn btn-secondary" onclick="speakText(currentSpeak.sv, 0.9)">🔊
+                Lyssna</button>
+              <button type="button" class="btn btn-danger" id="mic-btn" onclick="startSpeechRecognition()">🎙️ Tryck för
+                att tala</button>
+            </div>
+
+            <div class="controls-row">
+              <button type="button" class="btn btn-secondary" onclick="prevSpeakingSentence()">⬅ Föregående
+                mening</button>
+              <button type="button" class="btn btn-warning" onclick="toggleSpeakingTopicList()">👁️ Visa meningar i
+                topic</button>
             </div>
 
             <div id="sp-result" class="feedback-box"></div>
 
             <button type="button" class="btn btn-primary btn-block" id="next-speaking-btn" style="margin-top:12px;"
               onclick="nextSpeaking()">
-              Nästa mening ➔ (Kräver ≥ 70/100 poäng)
+              Nästa mening ➔ (Kräver ≥ 80/100 poäng)
             </button>
+
+            <div id="speaking-topic-script-box"
+              style="display:none; margin-top:12px; max-height:220px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; padding:6px;">
+            </div>
 
             <div class="spoken-history-box">
               <div class="spoken-history-head">
                 <span>📝 Lista över lästa meningar (<span id="spoken-history-count">0</span>)</span>
               </div>
               <div id="spoken-history-list" class="spoken-history-list">
-                <div class="spoken-empty">Inga meningar har registrerats ännu. Tryck på "🎙️ Tryck för att tala" för att börja!</div>
+                <div class="spoken-empty">Inga meningar har registrerats ännu. Tryck på "🎙️ Tryck för att tala" för att
+                  börja!</div>
               </div>
             </div>
           </div>
@@ -316,7 +360,8 @@
         <div id="tab-verbs" class="tab-content">
           <div class="card">
             <div class="card-title">Tra cứu Toàn bộ Động từ bất quy tắc</div>
-            <input type="text" id="verb-search" placeholder="Gõ động từ tiếng Thụy Điển (Infinitiv, Presens, Preteritum, Supinum) hoặc nghĩa tiếng Việt..."
+            <input type="text" id="verb-search"
+              placeholder="Gõ động từ tiếng Thụy Điển (Infinitiv, Presens, Preteritum, Supinum) hoặc nghĩa tiếng Việt..."
               oninput="filterVerbs()" />
             <div style="margin-top:12px; overflow-x:auto;">
               <table>
@@ -325,6 +370,7 @@
                     <th>Infinitiv (Nguyên mẫu)</th>
                     <th>Presens (Hiện tại)</th>
                     <th>Preteritum (Quá khứ)</th>
+                    <th>Imperativ (Phân từ)</th>
                     <th>Supinum (Phân từ)</th>
                     <th>Nghĩa tiếng Việt</th>
                   </tr>
@@ -342,7 +388,8 @@
               <span>🚨 Ngân hàng câu làm sai</span>
               <button type="button" class="btn btn-sm btn-danger" onclick="clearMistakes()">Xóa hết</button>
             </div>
-            <div id="mistake-list" style="font-size:13px; color:var(--muted);">Chưa có câu sai nào. Hãy luyện tập tiếp nhé!</div>
+            <div id="mistake-list" style="font-size:13px; color:var(--muted);">Chưa có câu sai nào. Hãy luyện tập tiếp
+              nhé!</div>
           </div>
         </div>
 
@@ -362,7 +409,8 @@
           onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); runSmartTranslate(); }"></textarea>
 
         <div class="sd-actions">
-          <button type="button" class="btn btn-sm btn-primary" onclick="runSmartTranslate()">Dịch &amp; Giải thích</button>
+          <button type="button" class="btn btn-sm btn-primary" onclick="runSmartTranslate()">Dịch &amp; Giải
+            thích</button>
           <button type="button" class="btn btn-sm btn-secondary" onclick="clearSmartTranslate()">Xóa</button>
         </div>
 

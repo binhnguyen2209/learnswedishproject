@@ -437,10 +437,10 @@ function renderVocab(autoSpeak = true) {
   document.getElementById('v-feedback').className = 'feedback-box';
 
   if(autoSpeak)
-    speakText(currentVocab.en);
+    speakText(currentVocab.sv);
 
   if (vocabMode === 'quiz') {
-    document.getElementById('v-prompt').innerText = currentVocab.en;
+    document.getElementById('v-prompt').innerText = currentVocab.sv;
     document.getElementById('v-phonetic').innerText = currentVocab.phonetic;
     if (Object.hasOwn(currentVocab, "termNote"))
       document.getElementById('v-termNote').innerText = currentVocab.termNote;
@@ -469,28 +469,28 @@ function checkQuizVocab(btn, isCorrect) {
   if (isCorrect) {
     btn.classList.add('correct');
     fb.className = 'feedback-box show fb-ok';
-    fb.innerHTML = `✅ Chính xác! <b>${currentVocab.en}</b> = ${currentVocab.vi}`;
-    speakText(currentVocab.en);
+    fb.innerHTML = `✅ Chính xác! <b>${currentVocab.sv}</b> = ${currentVocab.vi}`;
+    speakText(currentVocab.sv);
   } else {
     btn.classList.add('wrong');
     fb.className = 'feedback-box show fb-err';
     fb.innerHTML = `❌ Sai rồi! Đáp án đúng là: <b>${currentVocab.vi}</b>`;
-    addMistake(`Từ vựng: ${currentVocab.en} -> ${currentVocab.vi}`);
+    addMistake(`Từ vựng: ${currentVocab.sv} -> ${currentVocab.vi}`);
   }
 }
 
 function checkTypedVocab() {
   const val = document.getElementById('v-input').value.trim().toLowerCase();
-  const ans = currentVocab.en.toLowerCase();
+  const ans = currentVocab.sv.toLowerCase();
   const fb = document.getElementById('v-feedback');
   if (val === ans) {
     fb.className = 'feedback-box show fb-ok';
-    fb.innerHTML = `✅ Tuyệt vời! <b>${currentVocab.en}</b> ${currentVocab.phonetic}`;
-    speakText(currentVocab.en);
+    fb.innerHTML = `✅ Tuyệt vời! <b>${currentVocab.sv}</b> ${currentVocab.phonetic}`;
+    speakText(currentVocab.sv);
   } else {
     fb.className = 'feedback-box show fb-err';
-    fb.innerHTML = `❌ Chưa đúng. Từ chuẩn là: <b>${currentVocab.en}</b> ${currentVocab.phonetic}`;
-    addMistake(`Gõ từ: ${currentVocab.vi} -> ${currentVocab.en}`);
+    fb.innerHTML = `❌ Chưa đúng. Từ chuẩn là: <b>${currentVocab.sv}</b> ${currentVocab.phonetic}`;
+    addMistake(`Gõ từ: ${currentVocab.vi} -> ${currentVocab.sv}`);
   }
 }
 
@@ -546,11 +546,11 @@ function renderVocabStore(filterType) {
       (v) => `
       <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
         <div>
-          <b>${v.en}</b> <span style="font-size:12px; color:var(--muted);">${v.phonetic}</span><br/>
+          <b>${v.sv}</b> <span style="font-size:12px; color:var(--muted);">${v.phonetic}</span><br/>
           <span style="font-size:13px; color:var(--primary);">${v.vi}</span> <span class="tag">Bậc ${v.level}</span>
         </div>
         <div style="display:flex; gap:6px;">
-          <button class="btn btn-sm btn-secondary" onclick="speakText('${v.en}')">🔊 Nghe</button>
+          <button class="btn btn-sm btn-secondary" onclick="speakText('${v.sv}')">🔊 Nghe</button>
           <button class="btn btn-sm ${masteredIds.includes(v.id) ? 'btn-success' : 'btn-secondary'}" onclick="toggleStoreMaster(${v.id}, '${filterType}')">
             ${masteredIds.includes(v.id) ? 'Đã thuộc' : 'Chưa thuộc'}
           </button>
@@ -600,10 +600,6 @@ function renderDictBookmarkBar() {
   const entry = dictProgressStore.byLessonKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
   const totalSentences = Array.isArray(savedLesson.sentences) ? savedLesson.sentences.length : 0;
   const sentenceNum = totalSentences > 0 ? Math.min((entry.sentenceIdx || 0) + 1, totalSentences) : 1;
-
-  if (txtEl) {
-    txtEl.innerText = `Đang học tới: Hội thoại #${savedLessonIdx + 1} (${savedLesson.title}) • Câu #${sentenceNum}/${totalSentences}`;
-  }
 }
 
 function saveCurrentDictPosition({ updateActiveBookmark = true } = {}) {
@@ -743,7 +739,7 @@ function updateDictUI() {
             <b>#${i + 1}:</b>
             ${badge}
           </div>
-          <div>${s.en}</div>
+          <div>${s.sv}</div>
           <span style="color:var(--muted)">🇻🇳 ${s.vi}</span>
         </div>`;
       })
@@ -759,7 +755,7 @@ function playCurrentAudio(rate) {
   if (item) {
     saveCurrentDictPosition();
     saveCurrentListeningSentence();
-    speakText(item.en, rate);
+    speakText(item.sv, rate);
   }
 }
 
@@ -819,7 +815,7 @@ function checkDictation() {
   saveCurrentDictPosition();
   const item = currentLesson.sentences[currentDictIdx];
   const userWords = document.getElementById('dict-input').value.trim().split(/\s+/);
-  const rawTarget = item.en.split(/\s+/);
+  const rawTarget = item.sv.split(/\s+/);
 
   const html = rawTarget
     .map((w, i) => {
@@ -1240,12 +1236,403 @@ function renderGrammarReview() {
 }
 
 /* --- 5. SPEAKING & PRONUNCIATION SCORING (>= 80 TO ADVANCE) --- */
+// const SPOKEN_HISTORY_KEY = 'sv_spoken_history_v1';
+// const SPEAKING_IDX_KEY = 'sv_speaking_idx_v1';
+// const PASS_SCORE_THRESHOLD = 80;
+
+// let speakIdx = parseInt(localStorage.getItem(SPEAKING_IDX_KEY), 10) || 0;
+// if (!Number.isInteger(speakIdx) || speakIdx < 0) speakIdx = 0;
+
+// let spokenHistory = JSON.parse(localStorage.getItem(SPOKEN_HISTORY_KEY)) || [];
+// let lastSpeakingScore = 0;
+// let canAdvanceSpeaking = false;
+// let mainSpeakingScore = 0;
+// let mainCanAdvanceSpeaking = false;
+// let pendingReturnToCurrentSpeak = false;
+// let activePracticeTarget = null;
+// let repracticeTargetObj = null;
+// let pendingPassedRecord = null;
+// let isRepracticingFromHistory = false;
+// let repracticeRecordId = null;
+
+// function initSpeaking() {
+//   const savedIdx = parseInt(localStorage.getItem(SPEAKING_IDX_KEY), 10);
+//   speakIdx = Number.isInteger(savedIdx) && savedIdx >= 0 ? savedIdx : 0;
+//   renderSpeaking();
+// }
+
+// function setText(id, val) {
+//   const el = document.getElementById(id);
+//   if (el && val !== undefined) el.innerText = val;
+// }
+
+// function normalizePronText(str) {
+//   return String(str || '')
+//     .toLowerCase()
+//     .replace(/[^a-zåäö0-9'\s]/g, ' ')
+//     .replace(/\s+/g, ' ')
+//     .trim();
+// }
+
+// function levenshteinDistance(a, b) {
+//   const m = a.length;
+//   const n = b.length;
+//   if (m === 0) return n;
+//   if (n === 0) return m;
+//   const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+//   for (let i = 0; i <= m; i++) dp[i][0] = i;
+//   for (let j = 0; j <= n; j++) dp[0][j] = j;
+//   for (let i = 1; i <= m; i++) {
+//     for (let j = 1; j <= n; j++) {
+//       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+//       dp[i][j] = Math.min(
+//         dp[i - 1][j] + 1,
+//         dp[i][j - 1] + 1,
+//         dp[i - 1][j - 1] + cost
+//       );
+//     }
+//   }
+//   return dp[m][n];
+// }
+
+// function scorePronunciation(targetEn, saidText) {
+//   const normTarget = normalizePronText(targetEn);
+//   const normSaid = normalizePronText(saidText);
+
+//   if (!normTarget || !normSaid) {
+//     return { score: 0, passed: false, matchedWords: [], missingWords: normTarget ? normTarget.split(' ') : [] };
+//   }
+
+//   const targetWords = normTarget.split(' ');
+//   const saidWords = normSaid.split(' ');
+//   const saidSet = new Set(saidWords);
+
+//   const matchedWords = targetWords.filter((w) => saidSet.has(w));
+//   const missingWords = targetWords.filter((w) => !saidSet.has(w));
+//   const wordRatio = matchedWords.length / targetWords.length;
+
+//   const dist = levenshteinDistance(normTarget, normSaid);
+//   const maxLen = Math.max(normTarget.length, normSaid.length);
+//   const charRatio = maxLen > 0 ? Math.max(0, 1 - dist / maxLen) : 0;
+
+//   const rawScore = Math.round((wordRatio * 0.65 + charRatio * 0.35) * 100);
+//   const score = Math.max(0, Math.min(100, rawScore));
+
+//   return {
+//     score,
+//     passed: score >= PASS_SCORE_THRESHOLD,
+//     matchedWords,
+//     missingWords
+//   };
+// }
+
+// function updateNextSpeakingButtonUI() {
+//   const btn = document.getElementById('next-speaking-btn');
+//   if (!btn) return;
+//   if (canAdvanceSpeaking) {
+//     btn.classList.remove('btn-locked');
+//     btn.innerText = `Mẫu câu tiếp theo ➔ (Đã đạt ${lastSpeakingScore}/100)`;
+//   } else {
+//     btn.classList.add('btn-locked');
+//     btn.innerText = `🔒 Nästa mening ➔ (Kräver ≥ ${PASS_SCORE_THRESHOLD}/100 poäng)`;
+//   }
+// }
+
+// function renderSpeaking() {
+//   if (!Array.isArray(SPEAKING_DATA) || SPEAKING_DATA.length === 0) return;
+//   currentSpeak = SPEAKING_DATA[speakIdx % SPEAKING_DATA.length];
+//   lastSpeakingScore = 0;
+//   canAdvanceSpeaking = false;
+//   mainSpeakingScore = 0;
+//   mainCanAdvanceSpeaking = false;
+//   pendingReturnToCurrentSpeak = false;
+//   activePracticeTarget = null;
+//   repracticeTargetObj = null;
+//   pendingPassedRecord = null;
+//   isRepracticingFromHistory = false;
+//   repracticeRecordId = null;
+
+//   setText('sp-topic', currentSpeak.topic);
+//   setText('sp-sentence', `"${currentSpeak.sv}"`);
+//   setText('sp-meaning', currentSpeak.vi);
+
+//   const resEl = document.getElementById('sp-result');
+//   if (resEl) {
+//     resEl.className = 'feedback-box';
+//     resEl.innerHTML = '';
+//   }
+
+//   updateNextSpeakingButtonUI();
+//   renderSpokenHistory();
+// }
+
+// function nextSpeaking() {
+//   if (pendingReturnToCurrentSpeak) {
+//     pendingReturnToCurrentSpeak = false;
+//     lastSpeakingScore = 0;
+//     canAdvanceSpeaking = false;
+//     mainSpeakingScore = 0;
+//     mainCanAdvanceSpeaking = false;
+//     renderSpeaking();
+//     return;
+//   }
+
+//   if (!mainCanAdvanceSpeaking) {
+//     const fb = document.getElementById('sp-result');
+//     if (fb) {
+//       fb.className = 'feedback-box show fb-err';
+//       fb.innerHTML = `⛔ Bạn mới đạt <b>${mainSpeakingScore}/100</b> điểm cho câu hiện tại. Hãy bấm <b>🎙️ Bấm để nói</b> đọc câu này đạt tối thiểu <b>${PASS_SCORE_THRESHOLD}/100</b> điểm mới được qua câu tiếp theo!`;
+//     }
+//     return;
+//   }
+
+//   if (pendingPassedRecord) {
+//     addSpokenRecord(
+//       pendingPassedRecord.said,
+//       pendingPassedRecord.evalResult,
+//       pendingPassedRecord.targetObj
+//     );
+//   }
+//   pendingPassedRecord = null;
+
+//   speakIdx++;
+//   localStorage.setItem(SPEAKING_IDX_KEY, String(speakIdx));
+//   if (typeof syncProgressToCloud === 'function') {
+//     syncProgressToCloud();
+//   }
+//   renderSpeaking();
+// }
+
+// function saveSpokenHistory() {
+//   localStorage.setItem(SPOKEN_HISTORY_KEY, JSON.stringify(spokenHistory));
+//   renderSpokenHistory();
+//   if (typeof syncProgressToCloud === 'function') {
+//     syncProgressToCloud();
+//   }
+// }
+
+// function addSpokenRecord(saidText, evalResult, targetObj) {
+//   const cleanSaid = String(saidText || '').trim();
+//   if (!cleanSaid) return;
+
+//   const targetEn = targetObj && targetObj.sv ? targetObj.sv : (currentSpeak ? currentSpeak.sv : '');
+//   const targetVi = targetObj && targetObj.vi ? targetObj.vi : (currentSpeak ? currentSpeak.vi : '');
+//   const topic = targetObj && targetObj.topic ? targetObj.topic : (currentSpeak ? currentSpeak.topic : '');
+//   const timeNow = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+//   const normTarget = normalizePronText(targetEn);
+
+//   const existingIdx = normTarget
+//     ? spokenHistory.findIndex((r) => normalizePronText(r.targetEn) === normTarget)
+//     : -1;
+
+//   if (existingIdx !== -1) {
+//     spokenHistory[existingIdx] = {
+//       ...spokenHistory[existingIdx],
+//       said: cleanSaid,
+//       score: evalResult.score,
+//       passed: evalResult.passed,
+//       time: timeNow
+//     };
+//     saveSpokenHistory();
+//     return;
+//   }
+
+//   const record = {
+//     id: Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+//     said: cleanSaid,
+//     score: evalResult.score,
+//     passed: evalResult.passed,
+//     targetEn,
+//     targetVi,
+//     topic,
+//     time: timeNow
+//   };
+
+//   spokenHistory.unshift(record);
+//   spokenHistory = spokenHistory.slice(0, 60);
+//   saveSpokenHistory();
+// }
+
+// function replaySpokenText(text, rate = 0.95, event) {
+//   if (event) event.stopPropagation();
+//   if (!text) return;
+//   speakText(text, rate);
+// }
+
+// function practiceFromHistory(recordId) {
+//   const item = spokenHistory.find((r) => r.id === recordId);
+//   if (!item || !item.targetEn) return;
+
+//   const targetFromHistory = {
+//     en: item.targetEn,
+//     vi: item.targetVi || '',
+//     topic: item.topic || 'Ôn từ lịch sử'
+//   };
+
+//   pendingReturnToCurrentSpeak = false;
+//   isRepracticingFromHistory = true;
+//   repracticeRecordId = recordId;
+//   activePracticeTarget = targetFromHistory;
+//   repracticeTargetObj = targetFromHistory;
+
+//   setText('sp-topic', `Đọc lại: ${targetFromHistory.topic}`);
+//   setText('sp-sentence', `"${targetFromHistory.sv}"`);
+//   setText('sp-meaning', targetFromHistory.vi || '(Đọc lại câu mẫu này để chấm điểm)');
+//   startSpeechRecognition(targetFromHistory);
+// }
+
+// /* function clearSpokenHistory() {
+//   spokenHistory = [];
+//   saveSpokenHistory();
+// } */
+
+// function renderSpokenHistory() {
+//   const listEl = document.getElementById('spoken-history-list');
+//   const countEl = document.getElementById('spoken-history-count');
+//   if (!listEl) return;
+
+//   if (countEl) countEl.innerText = String(spokenHistory.length);
+
+//   if (!spokenHistory.length) {
+//     listEl.innerHTML = `<div class="spoken-empty">Chưa có câu nào được ghi nhận. Bấm "🎙️ Bấm để nói" để bắt đầu nhé!</div>`;
+//     return;
+//   }
+
+//   listEl.innerHTML = spokenHistory
+//     .map((item) => {
+//       const passed = Number(item.score) >= PASS_SCORE_THRESHOLD;
+//       const badgeClass = passed ? 'spoken-score-pass' : 'spoken-score-fail';
+//       const statusText = passed ? `✅ Đạt (${item.score}/100)` : `❌ Chưa đạt (${item.score}/100)`;
+//       const escapedSaid = String(item.said || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+//       const escapedTarget = String(item.targetEn || item.said || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+//       return `
+//         <div class="spoken-history-item">
+//           <div class="spoken-history-main">
+//             <div class="spoken-score-row">
+//               <span class="spoken-score-badge ${badgeClass}">${statusText}</span>
+//               <span style="font-size:11px; color:var(--muted);">${item.time || ''}</span>
+//             </div>
+//             <div class="spoken-said-text">Du läste: "${item.said}"</div>
+//             <div class="spoken-target-sub">
+//               ${item.targetEn ? `Mall: <b>${item.targetEn}</b>` : ''}${item.targetVi ? ` • ${item.targetVi}` : ''}
+//             </div>
+//           </div>
+//           <div class="spoken-history-actions">
+//             <button type="button" class="btn btn-sm btn-secondary" onclick="replaySpokenText('${escapedTarget}', 0.9, event)">🔊 Lyssna</button>
+//             <button type="button" class="btn btn-sm btn-primary" onclick="replaySpokenText('${escapedSaid}', 0.95, event)">🗣️ Lyssna på din egen röst</button>
+//             <button type="button" class="btn btn-sm btn-warning" onclick="practiceFromHistory('${item.id}')">🎙️ Läs upp igen</button>
+//           </div>
+//         </div>
+//       `;
+//     })
+//     .join('');
+// }
+
+// function startSpeechRecognition(explicitTarget = null) {
+//   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+//   if (!SpeechRec) return alert('Trình duyệt chưa hỗ trợ nhận diện giọng nói. Hãy dùng Google Chrome!');
+
+//   const targetObj = explicitTarget || activePracticeTarget || repracticeTargetObj || currentSpeak;
+//   const targetEn = targetObj ? targetObj.sv : '';
+
+//   const rec = new SpeechRec();
+//   rec.lang = 'sv-SE';
+//   const micBtn = document.getElementById('mic-btn');
+//   micBtn.classList.add('mic-pulse');
+//   micBtn.innerText = '🎙️ Đang nghe...';
+
+//   rec.onresult = (e) => {
+//     const said = e.results[0][0].transcript;
+//     const evalResult = scorePronunciation(targetEn, said);
+
+//     const wasRepracticing = isRepracticingFromHistory;
+//     const currentRecordId = repracticeRecordId;
+
+//     if (wasRepracticing) {
+//       if (evalResult.passed && currentRecordId) {
+//         const idx = spokenHistory.findIndex((r) => r.id === currentRecordId);
+//         if (idx !== -1) {
+//           spokenHistory[idx] = {
+//             ...spokenHistory[idx],
+//             said,
+//             score: evalResult.score,
+//             passed: true,
+//             time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+//           };
+//           saveSpokenHistory();
+//         }
+//         pendingReturnToCurrentSpeak = true;
+//         lastSpeakingScore = evalResult.score;
+//         canAdvanceSpeaking = true;
+//         updateNextSpeakingButtonUI();
+//       } else {
+//         pendingReturnToCurrentSpeak = false;
+//         lastSpeakingScore = mainSpeakingScore;
+//         canAdvanceSpeaking = mainCanAdvanceSpeaking;
+//         updateNextSpeakingButtonUI();
+//       }
+//     } else {
+//       pendingReturnToCurrentSpeak = false;
+//       mainSpeakingScore = evalResult.score;
+//       mainCanAdvanceSpeaking = evalResult.passed;
+//       lastSpeakingScore = evalResult.score;
+//       canAdvanceSpeaking = evalResult.passed;
+//       updateNextSpeakingButtonUI();
+
+//       if (evalResult.passed) {
+//         pendingPassedRecord = {
+//           said,
+//           evalResult,
+//           targetObj
+//         };
+//       } else {
+//         pendingPassedRecord = null;
+//       }
+//     }
+
+//     activePracticeTarget = null;
+//     repracticeTargetObj = null;
+//     isRepracticingFromHistory = false;
+//     repracticeRecordId = null;
+
+//     const fb = document.getElementById('sp-result');
+//     fb.className = evalResult.passed ? 'feedback-box show fb-ok' : 'feedback-box show fb-err';
+
+//     const missingHint = evalResult.missingWords.length
+//       ? `<div style="margin-top:6px; font-size:12.5px;">Từ cần đọc rõ hơn: <b>${evalResult.missingWords.join(', ')}</b></div>`
+//       : '';
+
+//     const nextHint = wasRepracticing
+//       ? (evalResult.passed
+//           ? `<div style="margin-top:6px; font-size:12.5px;">✅ Đã cập nhật điểm câu ôn! Bấm <b>Mẫu câu tiếp theo</b> để quay về đọc tiếp câu chính hiện tại.</div>`
+//           : `<div style="margin-top:6px; font-size:12.5px;">⚠️ Cần đạt ít nhất <b>${PASS_SCORE_THRESHOLD}/100</b> điểm để đạt câu ôn này. Hãy thử đọc lại nhé!</div>`)
+//       : evalResult.passed
+//         ? `<div style="margin-top:6px; font-size:12.5px;">🎉 Đạt chuẩn ≥ ${PASS_SCORE_THRESHOLD}/100! Bấm <b>Mẫu câu tiếp theo</b> để lưu vào lịch sử và qua câu mới.</div>`
+//         : `<div style="margin-top:6px; font-size:12.5px;">⚠️ Cần đạt ít nhất <b>${PASS_SCORE_THRESHOLD}/100</b> điểm để qua câu tiếp theo. Hãy thử đọc lại nhé!</div>`;
+
+//     fb.innerHTML = `
+//       <div><b>Điểm phát âm: ${evalResult.score}/100</b> ${evalResult.passed ? '✅ ĐẠT' : '❌ CHƯA ĐẠT'}</div>
+//       <div style="margin-top:4px;">🗣️ Bạn đọc: <b>"${said}"</b></div>
+//       <div style="margin-top:2px; font-size:12.5px;">🎯 Mẫu chuẩn: <i>"${targetEn}"</i></div>
+//       ${missingHint}
+//       ${nextHint}
+//     `;
+//   };
+
+//   rec.onerror = () => alert('Không nghe rõ, thử lại gần mic hơn.');
+//   rec.onend = () => {
+//     micBtn.classList.remove('mic-pulse');
+//     micBtn.innerText = '🎙️ Bấm để nói';
+//   };
+//   rec.start();
+// }
+
+/* --- 5. SPEAKING & PRONUNCIATION SCORING (>= 80 TO ADVANCE) --- */
 const SPOKEN_HISTORY_KEY = 'sv_spoken_history_v1';
 const SPEAKING_IDX_KEY = 'sv_speaking_idx_v1';
+const SPEAKING_PROGRESS_KEY = 'sv_speaking_progress_v1';
 const PASS_SCORE_THRESHOLD = 80;
-
-let speakIdx = parseInt(localStorage.getItem(SPEAKING_IDX_KEY), 10) || 0;
-if (!Number.isInteger(speakIdx) || speakIdx < 0) speakIdx = 0;
 
 let spokenHistory = JSON.parse(localStorage.getItem(SPOKEN_HISTORY_KEY)) || [];
 let lastSpeakingScore = 0;
@@ -1259,9 +1646,291 @@ let pendingPassedRecord = null;
 let isRepracticingFromHistory = false;
 let repracticeRecordId = null;
 
+function getSpeakingTopics() {
+  if (!Array.isArray(SPEAKING_DATA) || SPEAKING_DATA.length === 0) return [];
+  const map = new Map();
+
+  SPEAKING_DATA.forEach((item, idx) => {
+    const topicName = (item && item.topic ? String(item.topic).trim() : '') || 'Chủ đề chung';
+    if (!map.has(topicName)) {
+      map.set(topicName, {
+        id: `topic_${map.size}`,
+        title: topicName,
+        sentences: []
+      });
+    }
+    map.get(topicName).sentences.push({
+      ...item,
+      topic: topicName,
+      globalIndex: idx
+    });
+  });
+
+  return Array.from(map.values());
+}
+
+function getSpeakingTopicKey(topicObj, idx) {
+  return topicObj && topicObj.id ? String(topicObj.id) : `topic_${idx}`;
+}
+
+function createDefaultSpeakingProgress() {
+  const legacyIdx = parseInt(localStorage.getItem(SPEAKING_IDX_KEY), 10);
+  const topics = getSpeakingTopics();
+  let defaultTopicIdx = 0;
+  let defaultSentenceIdx = 0;
+
+  if (Number.isInteger(legacyIdx) && legacyIdx >= 0 && topics.length > 0) {
+    const targetItem = SPEAKING_DATA[legacyIdx % SPEAKING_DATA.length];
+    const targetTopicName = (targetItem && targetItem.topic ? String(targetItem.topic).trim() : '') || 'Chủ đề chung';
+    const foundTopicIdx = topics.findIndex((t) => t.title === targetTopicName);
+    if (foundTopicIdx >= 0) {
+      defaultTopicIdx = foundTopicIdx;
+      const foundSentIdx = topics[foundTopicIdx].sentences.findIndex((s) => s.globalIndex === (legacyIdx % SPEAKING_DATA.length));
+      if (foundSentIdx >= 0) defaultSentenceIdx = foundSentIdx;
+    }
+  }
+
+  const byTopicKey = {};
+  topics.forEach((t, idx) => {
+    const key = getSpeakingTopicKey(t, idx);
+    byTopicKey[key] = {
+      sentenceIdx: idx === defaultTopicIdx ? defaultSentenceIdx : 0,
+      maxVisitedIdx: idx === defaultTopicIdx ? defaultSentenceIdx : 0
+    };
+  });
+
+  return {
+    lastTopicIdx: defaultTopicIdx,
+    byTopicKey
+  };
+}
+
+let speakingProgressStore = (() => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SPEAKING_PROGRESS_KEY));
+    if (parsed && typeof parsed === 'object' && parsed.byTopicKey) {
+      return {
+        lastTopicIdx: Number.isInteger(parsed.lastTopicIdx) ? parsed.lastTopicIdx : 0,
+        byTopicKey: parsed.byTopicKey
+      };
+    }
+  } catch (e) {}
+  return createDefaultSpeakingProgress();
+})();
+
+let speakingTopics = [];
+let currentSpeakingTopicIdx = 0;
+let currentSpeakingSentenceIdx = 0;
+let speakIdx = 0;
+
+function syncSpeakingProgressStoreWithTopics() {
+  speakingTopics = getSpeakingTopics();
+  if (!speakingProgressStore.byTopicKey || typeof speakingProgressStore.byTopicKey !== 'object') {
+    speakingProgressStore.byTopicKey = {};
+  }
+  speakingTopics.forEach((t, idx) => {
+    const key = getSpeakingTopicKey(t, idx);
+    if (!speakingProgressStore.byTopicKey[key]) {
+      speakingProgressStore.byTopicKey[key] = { sentenceIdx: 0, maxVisitedIdx: 0 };
+    }
+  });
+}
+
+function renderSpeakingBookmarkBar() {
+  syncSpeakingProgressStoreWithTopics();
+  const txtEl = document.getElementById('speaking-bookmark-text');
+  if (!txtEl || speakingTopics.length === 0) return;
+
+  const savedTopicIdx = Math.min(Math.max(speakingProgressStore.lastTopicIdx || 0, 0), speakingTopics.length - 1);
+  const savedTopic = speakingTopics[savedTopicIdx];
+  if (!savedTopic) return;
+
+  const key = getSpeakingTopicKey(savedTopic, savedTopicIdx);
+  const entry = speakingProgressStore.byTopicKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
+  const totalSentences = Array.isArray(savedTopic.sentences) ? savedTopic.sentences.length : 0;
+  const sentenceNum = totalSentences > 0 ? Math.min((entry.sentenceIdx || 0) + 1, totalSentences) : 1;
+
+}
+
+function saveCurrentSpeakingPosition({ updateActiveBookmark = true } = {}) {
+  syncSpeakingProgressStoreWithTopics();
+  if (speakingTopics.length === 0) return;
+
+  const safeTopicIdx = Math.min(Math.max(currentSpeakingTopicIdx, 0), speakingTopics.length - 1);
+  const topicObj = speakingTopics[safeTopicIdx];
+  const total = topicObj && Array.isArray(topicObj.sentences) ? topicObj.sentences.length : 0;
+  const safeSentenceIdx = total > 0 ? Math.min(Math.max(currentSpeakingSentenceIdx, 0), total - 1) : 0;
+
+  const key = getSpeakingTopicKey(topicObj, safeTopicIdx);
+  const prevEntry = speakingProgressStore.byTopicKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
+  const nextMaxVisited = Math.max(prevEntry.maxVisitedIdx || 0, safeSentenceIdx);
+
+  if (updateActiveBookmark) {
+    speakingProgressStore.lastTopicIdx = safeTopicIdx;
+  }
+  speakingProgressStore.byTopicKey[key] = {
+    sentenceIdx: safeSentenceIdx,
+    maxVisitedIdx: nextMaxVisited
+  };
+
+  const activeSentence = total > 0 ? topicObj.sentences[safeSentenceIdx] : null;
+  if (activeSentence && typeof activeSentence.globalIndex === 'number') {
+    speakIdx = activeSentence.globalIndex;
+    localStorage.setItem(SPEAKING_IDX_KEY, String(speakIdx));
+  }
+
+  localStorage.setItem(SPEAKING_PROGRESS_KEY, JSON.stringify(speakingProgressStore));
+  refreshSpeakingTopicDropdownLabels();
+  renderSpeakingBookmarkBar();
+  if (typeof syncProgressToCloud === 'function') {
+    syncProgressToCloud();
+  }
+}
+
+function refreshSpeakingTopicDropdownLabels() {
+  const sel = document.getElementById('speaking-topic-select');
+  if (!sel || speakingTopics.length === 0) return;
+  const currentVal = sel.value;
+  sel.innerHTML = speakingTopics
+    .map((t, idx) => {
+      const key = getSpeakingTopicKey(t, idx);
+      const entry = speakingProgressStore.byTopicKey[key];
+      const total = Array.isArray(t.sentences) ? t.sentences.length : 0;
+      const mark = entry && total > 0
+        ? ` — [Đang ở câu ${Math.min((entry.sentenceIdx || 0) + 1, total)}/${total}]`
+        : '';
+      return `<option value="${idx}">Topic ${idx + 1}: ${t.title}${mark}</option>`;
+    })
+    .join('');
+  if (currentVal !== undefined && currentVal !== '') {
+    sel.value = String(Math.min(Math.max(parseInt(currentVal, 10) || 0, 0), speakingTopics.length - 1));
+  }
+}
+
+function initSpeakingTopicSelect() {
+  syncSpeakingProgressStoreWithTopics();
+  if (speakingTopics.length === 0) return;
+
+  const startTopicIdx = Math.min(Math.max(speakingProgressStore.lastTopicIdx || 0, 0), speakingTopics.length - 1);
+  currentSpeakingTopicIdx = startTopicIdx;
+
+  const startTopic = speakingTopics[startTopicIdx];
+  const key = getSpeakingTopicKey(startTopic, startTopicIdx);
+  const entry = speakingProgressStore.byTopicKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
+  const total = Array.isArray(startTopic.sentences) ? startTopic.sentences.length : 0;
+  currentSpeakingSentenceIdx = total > 0 ? Math.min(Math.max(entry.sentenceIdx || 0, 0), total - 1) : 0;
+
+  const sel = document.getElementById('speaking-topic-select');
+  if (sel) {
+    refreshSpeakingTopicDropdownLabels();
+    sel.value = String(startTopicIdx);
+  }
+}
+
+function loadSelectedSpeakingTopic() {
+  syncSpeakingProgressStoreWithTopics();
+  if (speakingTopics.length === 0) return;
+
+  const sel = document.getElementById('speaking-topic-select');
+  const idx = sel ? parseInt(sel.value, 10) : 0;
+  const safeIdx = Number.isNaN(idx) ? 0 : Math.min(Math.max(idx, 0), speakingTopics.length - 1);
+
+  currentSpeakingTopicIdx = safeIdx;
+  const topicObj = speakingTopics[safeIdx];
+  const key = getSpeakingTopicKey(topicObj, safeIdx);
+  const entry = speakingProgressStore.byTopicKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
+  const total = Array.isArray(topicObj.sentences) ? topicObj.sentences.length : 0;
+  currentSpeakingSentenceIdx = total > 0 ? Math.min(Math.max(entry.sentenceIdx || 0, 0), total - 1) : 0;
+
+  saveCurrentSpeakingPosition({ updateActiveBookmark: false });
+  renderSpeaking();
+}
+
+function resumeSavedSpeakingPosition() {
+  syncSpeakingProgressStoreWithTopics();
+  if (speakingTopics.length === 0) return;
+
+  const savedTopicIdx = Math.min(Math.max(Number(speakingProgressStore.lastTopicIdx) || 0, 0), speakingTopics.length - 1);
+  const targetTopic = speakingTopics[savedTopicIdx];
+  if (!targetTopic) return;
+
+  currentSpeakingTopicIdx = savedTopicIdx;
+  const key = getSpeakingTopicKey(targetTopic, savedTopicIdx);
+  const entry = speakingProgressStore.byTopicKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
+  const total = Array.isArray(targetTopic.sentences) ? targetTopic.sentences.length : 0;
+  currentSpeakingSentenceIdx = total > 0 ? Math.min(Math.max(Number(entry.sentenceIdx) || 0, 0), total - 1) : 0;
+
+  const sel = document.getElementById('speaking-topic-select');
+  if (sel) sel.value = String(savedTopicIdx);
+
+  saveCurrentSpeakingPosition({ updateActiveBookmark: true });
+  renderSpeaking();
+}
+
+function jumpToSpeakingSentence(sentenceIdx) {
+  syncSpeakingProgressStoreWithTopics();
+  const topicObj = speakingTopics[currentSpeakingTopicIdx];
+  if (!topicObj || !Array.isArray(topicObj.sentences) || topicObj.sentences.length === 0) return;
+
+  currentSpeakingSentenceIdx = Math.min(Math.max(sentenceIdx, 0), topicObj.sentences.length - 1);
+  saveCurrentSpeakingPosition({ updateActiveBookmark: true });
+  renderSpeaking();
+  if (currentSpeak && currentSpeak.sv && typeof speakText === 'function') {
+    speakText(currentSpeak.sv, 0.9);
+  }
+}
+
+function prevSpeakingSentence() {
+  if (currentSpeakingSentenceIdx > 0) {
+    jumpToSpeakingSentence(currentSpeakingSentenceIdx - 1);
+  }
+}
+
+function toggleSpeakingTopicList() {
+  const box = document.getElementById('speaking-topic-script-box');
+  if (box) {
+    box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+function renderSpeakingTopicSentenceList() {
+  const box = document.getElementById('speaking-topic-script-box');
+  if (!box) return;
+
+  const topicObj = speakingTopics[currentSpeakingTopicIdx];
+  if (!topicObj || !Array.isArray(topicObj.sentences)) {
+    box.innerHTML = '';
+    return;
+  }
+
+  const key = getSpeakingTopicKey(topicObj, currentSpeakingTopicIdx);
+  const entry = speakingProgressStore.byTopicKey[key] || { sentenceIdx: 0, maxVisitedIdx: 0 };
+  const maxVisitedIdx = entry.maxVisitedIdx || 0;
+
+  box.innerHTML = topicObj.sentences
+    .map((s, i) => {
+      const isCurrent = i === currentSpeakingSentenceIdx;
+      const isPassed = i < maxVisitedIdx && !isCurrent;
+      const badge = isCurrent
+        ? `<span class="script-badge-current">📍 Đang học</span>`
+        : isPassed
+          ? `<span class="script-badge-done">✓ Đã qua</span>`
+          : '';
+
+      return `<div class="script-item ${isCurrent ? 'active-line' : ''}" onclick="jumpToSpeakingSentence(${i})">
+        <div class="script-item-head">
+          <b>#${i + 1}:</b>
+          ${badge}
+        </div>
+        <div>${s.sv || ''}</div>
+        <span style="color:var(--muted)">🇻🇳 ${s.vi || ''}</span>
+      </div>`;
+    })
+    .join('');
+}
+
 function initSpeaking() {
-  const savedIdx = parseInt(localStorage.getItem(SPEAKING_IDX_KEY), 10);
-  speakIdx = Number.isInteger(savedIdx) && savedIdx >= 0 ? savedIdx : 0;
+  initSpeakingTopicSelect();
   renderSpeaking();
 }
 
@@ -1343,8 +2012,22 @@ function updateNextSpeakingButtonUI() {
 }
 
 function renderSpeaking() {
-  if (!Array.isArray(SPEAKING_DATA) || SPEAKING_DATA.length === 0) return;
-  currentSpeak = SPEAKING_DATA[speakIdx % SPEAKING_DATA.length];
+  syncSpeakingProgressStoreWithTopics();
+  if (speakingTopics.length === 0) return;
+
+  currentSpeakingTopicIdx = Math.min(Math.max(currentSpeakingTopicIdx, 0), speakingTopics.length - 1);
+  const topicObj = speakingTopics[currentSpeakingTopicIdx];
+  const totalSentences = Array.isArray(topicObj.sentences) ? topicObj.sentences.length : 0;
+  currentSpeakingSentenceIdx = totalSentences > 0
+    ? Math.min(Math.max(currentSpeakingSentenceIdx, 0), totalSentences - 1)
+    : 0;
+
+  currentSpeak = topicObj.sentences[currentSpeakingSentenceIdx];
+  if (currentSpeak && typeof currentSpeak.globalIndex === 'number') {
+    speakIdx = currentSpeak.globalIndex;
+    localStorage.setItem(SPEAKING_IDX_KEY, String(speakIdx));
+  }
+
   lastSpeakingScore = 0;
   canAdvanceSpeaking = false;
   mainSpeakingScore = 0;
@@ -1356,9 +2039,13 @@ function renderSpeaking() {
   isRepracticingFromHistory = false;
   repracticeRecordId = null;
 
-  setText('sp-topic', currentSpeak.topic);
-  setText('sp-sentence', `"${currentSpeak.en}"`);
-  setText('sp-meaning', currentSpeak.vi);
+  setText('sp-topic', topicObj.title);
+  setText('sp-progress', `Topic #${currentSpeakingTopicIdx + 1} • Câu ${currentSpeakingSentenceIdx + 1} / ${totalSentences}`);
+  setText('sp-sentence', `"${currentSpeak.sv || ''}"`);
+  setText('sp-meaning', currentSpeak.vi || '');
+
+  const sel = document.getElementById('speaking-topic-select');
+  if (sel) sel.value = String(currentSpeakingTopicIdx);
 
   const resEl = document.getElementById('sp-result');
   if (resEl) {
@@ -1367,6 +2054,9 @@ function renderSpeaking() {
   }
 
   updateNextSpeakingButtonUI();
+  renderSpeakingTopicSentenceList();
+  refreshSpeakingTopicDropdownLabels();
+  renderSpeakingBookmarkBar();
   renderSpokenHistory();
 }
 
@@ -1399,12 +2089,23 @@ function nextSpeaking() {
   }
   pendingPassedRecord = null;
 
-  speakIdx++;
-  localStorage.setItem(SPEAKING_IDX_KEY, String(speakIdx));
-  if (typeof syncProgressToCloud === 'function') {
-    syncProgressToCloud();
+  syncSpeakingProgressStoreWithTopics();
+  const topicObj = speakingTopics[currentSpeakingTopicIdx];
+  const totalSentences = topicObj && Array.isArray(topicObj.sentences) ? topicObj.sentences.length : 0;
+
+  if (totalSentences > 0 && currentSpeakingSentenceIdx < totalSentences - 1) {
+    currentSpeakingSentenceIdx++;
+    saveCurrentSpeakingPosition({ updateActiveBookmark: true });
+    renderSpeaking();
+  } else if (totalSentences > 0 && currentSpeakingSentenceIdx === totalSentences - 1) {
+    saveCurrentSpeakingPosition({ updateActiveBookmark: true });
+    renderSpeaking();
+    const fb = document.getElementById('sp-result');
+    if (fb) {
+      fb.className = 'feedback-box show fb-ok';
+      fb.innerHTML = `🎉 Bạn đã hoàn thành câu cuối cùng (<b>${totalSentences}/${totalSentences}</b>) của topic <b>${topicObj.title}</b>! Bạn có thể chọn topic khác ở danh sách phía trên để tiếp tục.`;
+    }
   }
-  renderSpeaking();
 }
 
 function saveSpokenHistory() {
@@ -1419,7 +2120,7 @@ function addSpokenRecord(saidText, evalResult, targetObj) {
   const cleanSaid = String(saidText || '').trim();
   if (!cleanSaid) return;
 
-  const targetEn = targetObj && targetObj.en ? targetObj.en : (currentSpeak ? currentSpeak.en : '');
+  const targetEn = targetObj && targetObj.sv ? targetObj.sv : (currentSpeak ? currentSpeak.sv : '');
   const targetVi = targetObj && targetObj.vi ? targetObj.vi : (currentSpeak ? currentSpeak.vi : '');
   const topic = targetObj && targetObj.topic ? targetObj.topic : (currentSpeak ? currentSpeak.topic : '');
   const timeNow = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
@@ -1468,6 +2169,7 @@ function practiceFromHistory(recordId) {
   if (!item || !item.targetEn) return;
 
   const targetFromHistory = {
+    sv: item.targetEn,
     en: item.targetEn,
     vi: item.targetVi || '',
     topic: item.topic || 'Ôn từ lịch sử'
@@ -1480,15 +2182,10 @@ function practiceFromHistory(recordId) {
   repracticeTargetObj = targetFromHistory;
 
   setText('sp-topic', `Đọc lại: ${targetFromHistory.topic}`);
-  setText('sp-sentence', `"${targetFromHistory.en}"`);
+  setText('sp-sentence', `"${targetFromHistory.sv}"`);
   setText('sp-meaning', targetFromHistory.vi || '(Đọc lại câu mẫu này để chấm điểm)');
   startSpeechRecognition(targetFromHistory);
 }
-
-/* function clearSpokenHistory() {
-  spokenHistory = [];
-  saveSpokenHistory();
-} */
 
 function renderSpokenHistory() {
   const listEl = document.getElementById('spoken-history-list');
@@ -1538,7 +2235,9 @@ function startSpeechRecognition(explicitTarget = null) {
   if (!SpeechRec) return alert('Trình duyệt chưa hỗ trợ nhận diện giọng nói. Hãy dùng Google Chrome!');
 
   const targetObj = explicitTarget || activePracticeTarget || repracticeTargetObj || currentSpeak;
-  const targetEn = targetObj ? targetObj.en : '';
+  const targetEn = targetObj ? targetObj.sv : '';
+
+  saveCurrentSpeakingPosition({ updateActiveBookmark: true });
 
   const rec = new SpeechRec();
   rec.lang = 'sv-SE';
@@ -1632,14 +2331,28 @@ function startSpeechRecognition(explicitTarget = null) {
   rec.start();
 }
 
-/* --- 6. VERBS (Infinitiv - Presens - Preteritum - Supinum - vi) --- */
-function renderVerbs(list) {
+/* --- 6. VERBS (Infinitiv - Presens - Preteritum - Imperativ - Supinum - vi) --- */
+let currentVerbSortOrder = 'asc'; // 'asc' = A-Z, 'desc' = Z-A
+let currentVerbSortField = 'infinitiv';
+
+function sortVerbsList(list, order = currentVerbSortOrder, field = currentVerbSortField) {
+  return [...list].sort((a, b) => {
+    const valA = (a[field] || '').toString().trim();
+    const valB = (b[field] || '').toString().trim();
+    const compared = valA.localeCompare(valB, 'sv', { sensitivity: 'base' });
+    return order === 'desc' ? -compared : compared;
+  });
+}
+
+function renderVerbs(list, sortOrder = currentVerbSortOrder, sortField = currentVerbSortField) {
   const tbody = document.getElementById('verb-table-body');
-  if (tbody) {
-    tbody.innerHTML = list
-      .map((v) => `<tr><td><b>${v.infinitiv || ''}</b></td><td>${v.presens || ''}</td><td>${v.preteritum || ''}</td><td>${v.supinum || ''}</td><td>${v.vi || ''}</td></tr>`)
-      .join('');
-  }
+  if (!tbody) return;
+
+  const sortedList = sortVerbsList(list, sortOrder, sortField);
+
+  tbody.innerHTML = sortedList
+    .map((v) => `<tr><td><b>${v.infinitiv || ''}</b></td><td>${v.presens || ''}</td><td>${v.preteritum || ''}</td><td>${v.imperativ || ''}</td><td>${v.supinum || ''}</td><td>${v.vi || ''}</td></tr>`)
+    .join('');
 }
 
 function filterVerbs() {
@@ -1650,6 +2363,7 @@ function filterVerbs() {
         (v.infinitiv || '').toLowerCase().includes(kw) ||
         (v.presens || '').toLowerCase().includes(kw) ||
         (v.preteritum || '').toLowerCase().includes(kw) ||
+        (v.imperativ || '').toLowerCase().includes(kw) ||
         (v.supinum || '').toLowerCase().includes(kw) ||
         (v.vi || '').toLowerCase().includes(kw)
     )
@@ -1754,7 +2468,7 @@ function findLocalVocabMatch(svQuery) {
   const clean = String(svQuery || '').trim().toLowerCase();
   if (!clean || typeof VOCAB_DATA === 'undefined' || !Array.isArray(VOCAB_DATA)) return null;
   return VOCAB_DATA.find((item) => {
-    const w = String(item.en || '').trim().toLowerCase();
+    const w = String(item.sv || '').trim().toLowerCase();
     return w === clean || w.replace(/^(en|ett|att)\s+/, '') === clean;
   }) || null;
 }
@@ -1791,7 +2505,7 @@ async function runSmartTranslate() {
       dictHtml = `
         <div class="sd-detail-card">
           <div style="font-weight:700; margin-bottom:6px;">
-            📖 Có trong kho từ vựng: "${localMatch.en}" ${localMatch.phonetic ? `<span style="font-weight:400; color:#64748b;">${localMatch.phonetic}</span>` : ''}
+            📖 Có trong kho từ vựng: "${localMatch.sv}" ${localMatch.phonetic ? `<span style="font-weight:400; color:#64748b;">${localMatch.phonetic}</span>` : ''}
           </div>
           <div><span class="sd-pos-tag">Bậc ${localMatch.level} • ${String(localMatch.topic || '').toUpperCase()}</span> <b>${localMatch.vi}</b></div>
           ${localMatch.termNote ? `<div style="margin-top:6px; color:#0f766e;">💡 <b>Ghi chú chuyên ngành:</b> ${localMatch.termNote}</div>` : ''}
